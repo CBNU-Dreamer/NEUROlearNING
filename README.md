@@ -71,6 +71,87 @@ feature/story1
 feature/login
 ```
 
+## 📌 중요 협업 원칙
+
+**항상 master에서 새 브랜치를 만듭니다.**
+
+**병합 전에는 항상 pull로 최신화합니다.**
+
+**병합은 feature → master → main 순서로 이뤄집니다.**
+
+**작업이 완료된 브랜치는 필요 시 삭제합니다.**
+
+**이슈는 생성-참조-해결까지 깔끔히 관리합니다.**
+
+---
+### 1️⃣ 다민 & 재영 - UI 초안 작업 흐름
+
+1. **원격 브랜치 최신화 및 master 기준 브랜치 생성**
+```bash
+git fetch origin
+git checkout master
+git pull origin master
+git checkout -b feature/pageX
+```
+2. **GitHub 이슈 생성**
+예: #21 feature/pageX-basicUI
+
+3. **Android Studio에서 XML UI 초안 작업**
+4. **작업물 커밋 & 푸시**
+```bash
+git add .
+git commit -m "#21 feat: pageX 초안 UI 구성 완료"
+git push origin feature/pageX
+```
+
+5. **작업 완료 후 master 병합**
+```bash
+git checkout master
+git pull origin master
+git merge feature/pageX
+git push origin master
+```
+6. **이슈 클로즈 & 다음 브랜치로 이동**
+```bash
+git checkout -b feature/pageY
+```
+---
+### 2️⃣수연 & 예솔 – 기능 및 디자인 작업 흐름
+
+1. **master 최신화**
+```bash
+git fetch origin
+git checkout master
+git pull origin master
+```
+2. **기능 브랜치 가져오기**
+```bash
+git checkout -b feature/pageX origin/feature/pageX
+```
+3. **각자 이슈 생성 후 세부 작업**
+
+예솔: #23 feature/pageX-디자인 적용
+
+수연: #24 feature/pageX-DB 연동
+
+4. **작업 완료 후 커밋 & 푸시**
+```bash
+git add .
+git commit -m "#24 feat: DB 연동 기능 구현"
+git push origin feature/pageX
+```
+5. **기능 구현 완료 시 병합 (수연 담당)**
+```bash
+git checkout master
+git pull origin master
+git merge feature/pageX
+git push origin master
+```
+6. **브랜치 정리 (완전한 작업 완료 후)**
+```bash
+git branch -d feature/pageX
+git push origin --delete feature/pageX
+```
 ---
 
 ## 🗂️ 이슈 관리 전략
