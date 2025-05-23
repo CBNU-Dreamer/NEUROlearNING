@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NeighborbookActivity">
+    tools:context=".ui.NeighborBookActivity">
 
     <!-- 상단 타이틀 -->
     <TextView
@@ -81,18 +81,21 @@
         android:layout_marginTop="12dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextBirthYear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="연도" />
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextBirthMonth"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="월" />
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextBirthDay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

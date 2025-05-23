@@ -1,13 +1,16 @@
-package com.example.neuroleaning;
+package com.example.neurolearning;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-public class UserInfoActivity extends AppCompatActivity {
+import com.example.neurolearning.R;
+
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_userinfo);
+        setContentView(R.layout.activity_signup);
     }
 }

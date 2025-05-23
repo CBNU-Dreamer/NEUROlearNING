@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.neuroleaning"
+    namespace = "com.example.neurolearning"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.neuroleaning"
+        applicationId = "com.example.neurolearning"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -30,6 +30,8 @@ android {
 
 dependencies {
 
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")

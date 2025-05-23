@@ -1,4 +1,4 @@
-package com.example.neuroleaning;
+package com.example.neurolearning;
 
 import org.junit.Test;
 

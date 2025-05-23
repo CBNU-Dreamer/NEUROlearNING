@@ -1,5 +1,6 @@
-package com.example.neuroleaning;
+package com.example.neurolearning.ui;
 
+import com.example.neurolearning.R;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

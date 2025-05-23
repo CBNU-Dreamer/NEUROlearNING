@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NEUROLEANING"
+rootProject.name = "NEUROLEARNING"
 include(":app")
  
