@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    <manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.example.neuroleaning">
 
     <application
         android:allowBackup="true"
@@ -12,15 +14,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NEUROLEANING"
         tools:targetApi="31">
+
+        <!-- 기존 MainActivity의 LAUNCHER intent 제거 -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
 
+        <!-- NeighborBookActivity를 앱의 시작점(Launcher)으로 설정 -->
+        <activity
+            android:name=".NeighborBookActivity"
+            android:label="NeighborBook"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+    </application>
 </manifest>
