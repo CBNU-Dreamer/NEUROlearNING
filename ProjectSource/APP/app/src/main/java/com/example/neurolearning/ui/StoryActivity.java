@@ -96,16 +96,16 @@ public class StoryActivity extends AppCompatActivity {
     // 스토리 번호에 따라 해당 Activity 클래스 반환
     private Class<?> getStoryClass(int index) {
         switch (index) {
-            case 0: return StoryActivity.class;
+            case 0: return Story2Activity.class;
             case 1: return Story2Activity.class;
-            case 2: return StoryActivity.class;
-            case 3: return StoryActivity.class;
-            case 4: return StoryActivity.class;
-            case 5: return StoryActivity.class;
-            case 6: return StoryActivity.class;
-            case 7: return StoryActivity.class;
-            case 8: return StoryActivity.class;
-            case 9: return StoryActivity.class;
+            case 2: return Story2Activity.class;
+            case 3: return Story2Activity.class;
+            case 4: return Story2Activity.class;
+            case 5: return Story2Activity.class;
+            case 6: return Story2Activity.class;
+            case 7: return Story2Activity.class;
+            case 8: return Story2Activity.class;
+            case 9: return Story2Activity.class;
             default: return null;
         }
     }

@@ -46,7 +46,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.neurolearning.ui.StoryActivity" />
+        <!-- 스토리 상세 / 키오스크 진입 화면 -->
+        <activity android:name="com.example.neurolearning.ui.StoryActivity" android:exported="true" />
+
+        <!-- 스토리 상세 / 키오스크 진입 화면 -->
+        <activity android:name="com.example.neurolearning.ui.Story2Activity" android:exported="true" />
+
+        <!-- 키오스크 게임 화면 -->
+        <activity android:name="com.example.neurolearning.ui.KioskGameActivity" android:exported="true" />
+
 
     </application>
 </manifest>
