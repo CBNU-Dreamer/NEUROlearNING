@@ -143,5 +143,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             Toast.makeText(this, "회원가입 완료!", Toast.LENGTH_SHORT).show();
         });
+
+        Button testButton = findViewById(R.id.button);
+        testButton.setOnClickListener(v -> {
+            Intent testintent = new Intent(SignUpActivity.this, StoryActivity.class);
+            startActivity(testintent);
+        });
+
     }
 }
