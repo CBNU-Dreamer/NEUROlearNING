@@ -59,4 +59,85 @@ public class User {
         this.address = address;
         this.disease = disease;
     }
+
+    // UserInfoActivity에서 사용하는 생성자 (나이 기반)
+    public User(@NonNull String username, String password, String name, int age,
+                String phone, String address, String guardianPhone, String disease) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        // 나이를 대략적인 생년으로 변환 (2024년 기준)
+        this.birthYear = 2024 - age;
+        this.birthMonth = 1;  // 기본값
+        this.birthDay = 1;    // 기본값
+        this.isLunar = false; // 기본값
+        this.phone = phone;
+        this.guardianPhone = guardianPhone;
+        this.address = address;
+        this.disease = disease;
+    }
+
+    // Getter 메서드들 추가
+    @NonNull
+    public String getId() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        // 2024년 기준으로 나이 계산
+        return 2024 - birthYear;
+    }
+
+    public String getPhone() {
+        return phone != null ? phone : "";
+    }
+
+    public String getAddress() {
+        return address != null ? address : "";
+    }
+
+    public String getGuardianPhone() {
+        return guardianPhone != null ? guardianPhone : "";
+    }
+
+    public String getDisease() {
+        return disease != null ? disease : "";
+    }
+
+    // Setter 메서드들 (업데이트용)
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.birthYear = 2024 - age;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setGuardianPhone(String guardianPhone) {
+        this.guardianPhone = guardianPhone;
+    }
+
+    public void setDisease(String disease) {
+        this.disease = disease;
+    }
 }
