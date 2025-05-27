@@ -109,7 +109,7 @@ public class StoryActivity extends AppCompatActivity {
     // 스토리 번호에 따라 해당 Activity 클래스 반환
     private Class<?> getStoryClass(int index) {
         switch (index) {
-            case 0: return Story2Activity.class;
+            case 0: return Story1Activity.class;
             case 1: return Story2Activity.class;
             case 2: return Story3Activity.class;
             case 3: return Story2Activity.class;

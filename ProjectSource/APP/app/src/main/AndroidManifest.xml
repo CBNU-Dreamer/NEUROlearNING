@@ -49,17 +49,21 @@
         <!-- 스토리 리스트 (홈) -->
         <activity android:name="com.example.neurolearning.ui.StoryActivity" android:exported="true" />
 
-        <!-- 스토리2 상세 / 키오스크 게임 진입 화면 -->
-        <activity android:name="com.example.neurolearning.ui.Story2Activity" android:exported="true" />
+        <!-- 스토리1 상세 / 십자말풀이 게임 진입 화면 -->
+        <activity android:name="com.example.neurolearning.ui.Story1Activity" android:exported="true" />
+        <!-- 가위바위보 게임 화면 -->
+        <activity android:name="com.example.neurolearning.ui.CrossWordGameActivity" android:exported="true" />
 
-        <!-- 키오스크 게임 화면 -->
-        <activity android:name="com.example.neurolearning.ui.KioskGameActivity" android:exported="true" />
+        <!-- 스토리2 상세 / 가위바위보 게임 진입 화면 -->
+        <activity android:name="com.example.neurolearning.ui.Story2Activity" android:exported="true" />
+        <!-- 가위바위보 게임 화면 -->
+        <activity android:name="com.example.neurolearning.ui.RspGameActivity" android:exported="true" />
 
         <!-- 스토리3 상세 / 가위바위보 게임 진입 화면 -->
         <activity android:name="com.example.neurolearning.ui.Story3Activity" android:exported="true" />
+        <!-- 키오스크 게임 화면 -->
+        <activity android:name="com.example.neurolearning.ui.KioskGameActivity" android:exported="true" />
 
-        <!-- 가위바위보 게임 화면 -->
-        <activity android:name="com.example.neurolearning.ui.RspGameActivity" android:exported="true" />
 
 
     </application>
