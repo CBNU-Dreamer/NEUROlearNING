@@ -6,14 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 툴바 -->
+    <!-- 상단 툴바 -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:title="내 정보"
-        android:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
     <!-- 내용은 툴바 아래에 배치 -->

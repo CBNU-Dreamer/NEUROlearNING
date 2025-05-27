@@ -1,18 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/storyContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/textView"
+    <!-- 스크롤 영역 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/storyContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="이웃들을 만나보세요!" />
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이웃들을 만나보세요!" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 고정된 하단 내비게이션 바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center"
+        android:background="#DDDDDD">
+
+        <Button
+            android:id="@+id/btnDictionary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="이웃 사전" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnUserInfo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="사용자 정보" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

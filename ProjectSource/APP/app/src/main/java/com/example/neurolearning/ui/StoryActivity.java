@@ -22,10 +22,23 @@ public class StoryActivity extends AppCompatActivity {
 
     private int step = 8; // 현재 진행 중인 스토리 단계 (1부터 시작)
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
+
+        // 하단 버튼 클릭 이벤트
+        findViewById(R.id.btnDictionary).setOnClickListener(v -> {
+            Intent intent = new Intent(this, NeighborBookActivity.class); // 만들어놓은 이웃 사전 화면
+            startActivity(intent);
+        });
+
+        findViewById(R.id.btnUserInfo).setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserInfoActivity.class); // 만들어놓은 사용자 정보 화면
+            startActivity(intent);
+        });
+
 
         LinearLayout container = findViewById(R.id.storyContainer);
 
