@@ -98,7 +98,7 @@ public class StoryActivity extends AppCompatActivity {
         switch (index) {
             case 0: return Story2Activity.class;
             case 1: return Story2Activity.class;
-            case 2: return Story2Activity.class;
+            case 2: return Story3Activity.class;
             case 3: return Story2Activity.class;
             case 4: return Story2Activity.class;
             case 5: return Story2Activity.class;
