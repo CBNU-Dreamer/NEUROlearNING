@@ -3,6 +3,7 @@ package com.example.neurolearning.ui;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -32,11 +33,32 @@ public class RspGameActivity extends AppCompatActivity {
         startGame();
     }
 
+    private int getImageResId(String choice) {
+        switch (choice) {
+            case "가위":
+                return R.drawable.ic_rsp_scissors;
+            case "바위":
+                return R.drawable.ic_rsp_rock;
+            case "보":
+                return R.drawable.ic_rsp_paper;
+            default:
+                return 0;
+        }
+    }
+
+    private int dp(int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getResources().getDisplayMetrics()
+        );
+    }
+
+
     private void startGame() {
         tvTitle.setText("가위바위보 게임");
         tvSubtitle.setText("조건에 맞게 가위, 바위, 보 중 하나를 내세요!");
 
-        // NPC 선택 & 조건 설정
         npcChoice = getRandomChoice();
         playerCondition = getRandomCondition();
 
@@ -45,38 +67,49 @@ public class RspGameActivity extends AppCompatActivity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
+        layout.setPadding(16, 16, 16, 16);
 
-        // NPC 대화창
+        // NPC 대화 + 이미지
         TextView tvNpc = new TextView(this);
         tvNpc.setText("예술양: 저는 " + npcChoice + "를 냈어요!");
         tvNpc.setTextSize(18f);
-        tvNpc.setPadding(16, 16, 16, 16);
         layout.addView(tvNpc);
 
-        // 플레이어 조건
+        ImageView npcImg = new ImageView(this);
+        npcImg.setImageResource(getImageResId(npcChoice));
+        npcImg.setLayoutParams(new LinearLayout.LayoutParams(dp(120), dp(120)));
+        layout.addView(npcImg);
+
+        // 조건 텍스트
         TextView tvCond = new TextView(this);
         tvCond.setText(playerCondition);
         tvCond.setTextSize(20f);
         tvCond.setTextColor(Color.BLUE);
-        tvCond.setPadding(16, 16, 16, 32);
+        tvCond.setPadding(0, dp(16), 0, dp(16));
         layout.addView(tvCond);
 
-        // 선택 버튼들
-        LinearLayout btnGroup = new LinearLayout(this);
-        btnGroup.setOrientation(LinearLayout.HORIZONTAL);
-        btnGroup.setGravity(Gravity.CENTER);
-        btnGroup.setPadding(0, 0, 0, 24);
+        // 이미지 버튼 (가위/바위/보)
+        LinearLayout btnLayout = new LinearLayout(this);
+        btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+        btnLayout.setGravity(Gravity.CENTER);
 
         for (String choice : choices) {
-            Button btn = new Button(this);
-            btn.setText(choice);
+            ImageButton btn = new ImageButton(this);
+            btn.setImageResource(getImageResId(choice));
+            btn.setBackgroundColor(Color.TRANSPARENT);
+            btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(100), dp(100));
+            lp.setMargins(dp(8), dp(8), dp(8), dp(8));
+            btn.setLayoutParams(lp);
+
             btn.setOnClickListener(v -> checkResult(choice));
-            btnGroup.addView(btn);
+            btnLayout.addView(btn);
         }
 
-        layout.addView(btnGroup);
+        layout.addView(btnLayout);
         contentFrame.addView(layout);
     }
+
 
     private String getRandomChoice() {
         return choices[new Random().nextInt(3)];
