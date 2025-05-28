@@ -1,7 +1,6 @@
 package com.example.neurolearning.ui;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,8 +44,11 @@ public class UserInfoActivity extends AppCompatActivity {
         // 아이디는 수정 불가
         etUserId.setEnabled(false);
 
+        String username = getIntent().getStringExtra("username");
+        loadUserInfo(username);
+
         // 사용자 데이터 로딩 (가정: 아이디는 이미 로그인한 사용자라면 전달됨)
-        loadUserInfo("yourid");  // 나중에 intent나 SharedPref로 대체
+        //loadUserInfo("yourid");  // 나중에 intent나 SharedPref로 대체
 
         // 수정 버튼 클릭 시
         btnModify.setOnClickListener(v -> updateUserInfo());
@@ -94,7 +96,7 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private boolean validateInput(String pw, String name, String ageStr, String phone) {
-        if (TextUtils.isEmpty(pw) || pw.length() < 8 || pw.length() > 12 || pw.matches(".*[^a-z0-9].*")) {
+        if (pw.length() < 8 || pw.length() > 12 || pw.matches(".*[^a-z0-9].*")) {
             etPassword.setError("비밀번호는 8~12자, 영문소문자+숫자만 허용");
             return false;
         }
