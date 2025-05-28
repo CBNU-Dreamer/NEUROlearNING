@@ -21,71 +21,78 @@ public class GameProgressRepository {
         }
     }
 
-    // 🎯 안전한 초기화 (트랜잭션 순서 개선)
+    // 🎯 안전한 초기화 - 동기화 개선
     public void initializeUserGameStatus(String username) {
         new Thread(() -> {
             try {
-                Log.d(TAG, "사용자 게임 상태 초기화 시작: " + username);
+                Log.d(TAG, "=== 사용자 게임 상태 초기화 시작: " + username + " ===");
 
                 // 1. UserGameStatus 먼저 초기화
                 UserGameStatus userStatus = new UserGameStatus(username, 1, 0,
                         System.currentTimeMillis(), 0);
                 gameProgressDao.insertUserGameStatus(userStatus);
-                Log.d(TAG, "UserGameStatus 삽입 완료");
+                Log.d(TAG, "✅ UserGameStatus 삽입 완료: " + username);
 
-                // 2. StoryStatus 초기화 (1~9번 스토리)
+                // 2. StoryStatus 초기화 (1~9번 스토리) - 각각 로그 출력
                 for (int i = 1; i <= 9; i++) {
                     StoryStatus storyStatus = new StoryStatus(username, i, false, 0, 0, 0, 0);
                     gameProgressDao.insertStoryStatus(storyStatus);
+                    Log.d(TAG, "📖 StoryStatus 삽입: Story" + i + " for " + username);
                 }
-                Log.d(TAG, "모든 StoryStatus 삽입 완료");
+                Log.d(TAG, "✅ 모든 StoryStatus 삽입 완료: " + username);
+                Log.d(TAG, "=== 초기화 완전 완료: " + username + " ===");
 
             } catch (Exception e) {
-                Log.e(TAG, "사용자 게임 상태 초기화 실패: " + username, e);
+                Log.e(TAG, "❌ 사용자 게임 상태 초기화 실패: " + username, e);
             }
         }).start();
     }
 
-    // 🎯 안전한 스토리 완료 처리
+    // 🎯 수정된 스토리 완료 처리 - 매개변수 순서 수정
     public void completeStory(String username, int storyNumber) {
         new Thread(() -> {
             try {
-                Log.d(TAG, "스토리 완료 처리: " + username + ", Story" + storyNumber);
+                Log.d(TAG, "=== 스토리 완료 처리 시작: " + username + ", Story" + storyNumber + " ===");
 
                 long currentTime = System.currentTimeMillis();
 
                 // 1. 해당 스토리를 완료 상태로 변경
                 gameProgressDao.completeStory(username, storyNumber, currentTime);
+                Log.d(TAG, "📖 StoryStatus 완료 처리: Story" + storyNumber);
 
-                // 2. 전체 게임 현황 업데이트
-                int nextStory = Math.min(storyNumber + 1, 9);
-                gameProgressDao.updateUserProgress(username, nextStory, storyNumber);
+                // 2. 🎯 수정: 완료된 스토리 수 계산 및 업데이트
+                int completedCount = storyNumber; // Story1 완료하면 1개 완료
+                int nextStory = Math.min(storyNumber + 1, 9); // 다음 스토리는 2
 
-                Log.d(TAG, "스토리 완료 처리 성공");
+                Log.d(TAG, "📊 업데이트 정보: completedCount=" + completedCount + ", nextStory=" + nextStory);
+
+                // 🎯 매개변수 순서 수정: currentStory, completedCount 순서
+                gameProgressDao.updateUserProgress(username, nextStory, completedCount);
+                Log.d(TAG, "✅ UserGameStatus 업데이트 완료: nextStory=" + nextStory + ", completed=" + completedCount);
+
+                Log.d(TAG, "=== 스토리 완료 처리 성공: " + username + " ===");
             } catch (Exception e) {
-                Log.e(TAG, "스토리 완료 처리 실패", e);
+                Log.e(TAG, "❌ 스토리 완료 처리 실패: " + username, e);
             }
         }).start();
     }
 
-    // 🎯 가장 안전한 게임 기록 저장
+    // 기존 saveGamePlayRecord는 그대로 유지...
     public void saveGamePlayRecord(String username, int storyNumber, String gameType,
                                    int score, boolean isSuccess, int mistakes, long completionTime) {
         new Thread(() -> {
             try {
                 Log.d(TAG, "게임 기록 저장 시작: " + username + ", " + gameType + ", 점수: " + score);
 
-                // 1. 게임 플레이 기록 저장
                 GamePlayRecord record = new GamePlayRecord(username, storyNumber, gameType,
                         score, isSuccess, System.currentTimeMillis(),
                         mistakes, completionTime);
                 gameProgressDao.insertGamePlayRecord(record);
                 Log.d(TAG, "GamePlayRecord 삽입 완료");
 
-                // 2. 스토리 플레이 카운트 증가 (안전하게)
                 try {
                     gameProgressDao.incrementStoryPlayCount(username, storyNumber);
-                    Log.d(TAG, "StoryStatus 업데이트 완료");
+                    Log.d(TAG, "StoryStatus 플레이 카운트 업데이트 완료");
                 } catch (Exception e) {
                     Log.w(TAG, "StoryStatus 업데이트 실패하지만 기록 저장은 성공", e);
                 }
