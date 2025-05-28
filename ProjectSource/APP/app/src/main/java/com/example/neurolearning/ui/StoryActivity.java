@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,33 +15,78 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameProgressRepository;
+import com.example.neurolearning.data.UserGameStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StoryActivity extends AppCompatActivity {
 
-    private int step = 8; // 현재 진행 중인 스토리 단계 (1부터 시작)
+    private GameProgressRepository gameProgressRepository;
+    private String currentUsername;
+    private int unlockedStoryCount = 1; // 해제된 스토리 수
 
+    // 하단 네비게이션 바 버튼들 (추가)
+    private Button btnDictionary;
+    private Button btnUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
 
-        // 하단 버튼 클릭 이벤트
-        findViewById(R.id.btnDictionary).setOnClickListener(v -> {
-            Intent intent = new Intent(this, NeighborBookActivity.class); // 만들어놓은 이웃 사전 화면
+        // 사용자 정보 가져오기
+        currentUsername = getIntent().getStringExtra("username");
+        if (currentUsername == null) {
+            currentUsername = "testuser";
+        }
+
+        // Repository 초기화
+        gameProgressRepository = new GameProgressRepository(getApplication());
+
+        // 하단 네비게이션 바 초기화 (추가)
+        initBottomNavigation();
+
+        // 사용자 게임 현황 관찰
+        observeUserGameStatus();
+    }
+
+    // 하단 네비게이션 바 초기화 메서드 (추가)
+    private void initBottomNavigation() {
+        btnDictionary = findViewById(R.id.btnDictionary);
+        btnUserInfo = findViewById(R.id.btnUserInfo);
+
+        // 이웃 사전 버튼 클릭 리스너
+        btnDictionary.setOnClickListener(v -> {
+            Intent intent = new Intent(StoryActivity.this, NeighborBookActivity.class);
+            intent.putExtra("username", currentUsername);
             startActivity(intent);
         });
 
-        findViewById(R.id.btnUserInfo).setOnClickListener(v -> {
-            Intent intent = new Intent(this, UserInfoActivity.class); // 만들어놓은 사용자 정보 화면
+        // 사용자 정보 버튼 클릭 리스너
+        btnUserInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(StoryActivity.this, UserInfoActivity.class);
+            intent.putExtra("username", currentUsername);
             startActivity(intent);
         });
+    }
 
+    private void observeUserGameStatus() {
+        gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
+            if (userGameStatus != null) {
+                unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
+                setupStoryList();
+            } else {
+                unlockedStoryCount = 1;
+                setupStoryList();
+            }
+        });
+    }
 
+    private void setupStoryList() {
         LinearLayout container = findViewById(R.id.storyContainer);
+        container.removeAllViews();
 
         List<Neighbor> neighbors = new ArrayList<>();
         neighbors.add(new Neighbor("편의점 직원 배수연", "첫 번째 이야기"));
@@ -52,7 +98,6 @@ public class StoryActivity extends AppCompatActivity {
         neighbors.add(new Neighbor("일본인 유학생 야마다", "일곱 번째 이야기"));
         neighbors.add(new Neighbor("버스 정류장에서 만난 정새연", "여덟 번째 이야기"));
         neighbors.add(new Neighbor("사랑하는 손녀 김토리", "아홉 번째 이야기"));
-        neighbors.add(new Neighbor("???", "열 번째 이야기"));
 
         for (int i = 0; i < neighbors.size(); i++) {
             Neighbor neighbor = neighbors.get(i);
@@ -65,27 +110,32 @@ public class StoryActivity extends AppCompatActivity {
 
             title.setText(neighbor.getStorytext());
 
-            if (i < step) {
+            if (i < unlockedStoryCount) {
+                // 해제된 스토리
                 subtitle.setText(neighbor.getNeighbortext());
                 lockIcon.setVisibility(View.GONE);
 
-                // 현재 스토리는 노란색 강조
+                // 현재 진행 가능한 스토리는 노란색 강조
+                boolean isCurrentStory = (i == unlockedStoryCount - 1);
                 root.setBackground(createBackground(
-                        i == step - 1 ? "#FFFDE7" : "#FFFFFF",
-                        i == step - 1 ? 4 : 2,
-                        i == step - 1 ? "#000000" : "#E0E0E0"
+                        isCurrentStory ? "#FFFDE7" : "#FFFFFF",
+                        isCurrentStory ? 4 : 2,
+                        isCurrentStory ? "#000000" : "#E0E0E0"
                 ));
 
-                int index = i;
+                final int storyNumber = i + 1;
                 itemView.setOnClickListener(v -> {
-                    Class<?> targetClass = getStoryClass(index);
+                    Class<?> targetClass = getStoryClass(storyNumber);
                     if (targetClass != null) {
                         Intent intent = new Intent(this, targetClass);
+                        intent.putExtra("username", currentUsername);
+                        intent.putExtra("storyNumber", storyNumber);
                         startActivity(intent);
                     }
                 });
 
             } else {
+                // 잠긴 스토리
                 subtitle.setText("???");
                 lockIcon.setVisibility(View.VISIBLE);
                 root.setBackground(createBackground("#FFFFFF", 2, "#E0E0E0"));
@@ -107,19 +157,29 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     // 스토리 번호에 따라 해당 Activity 클래스 반환
-    private Class<?> getStoryClass(int index) {
-        switch (index) {
-            case 0: return Story1Activity.class;
-            case 1: return Story2Activity.class;
-            case 2: return Story3Activity.class;
-            case 3: return Story2Activity.class;
-            case 4: return Story2Activity.class;
-            case 5: return Story2Activity.class;
-            case 6: return Story2Activity.class;
-            case 7: return Story2Activity.class;
-            case 8: return Story2Activity.class;
-            case 9: return Story2Activity.class;
-            default: return null;
+    private Class<?> getStoryClass(int storyNumber) {
+        switch (storyNumber) {
+            case 1:
+                return Story1Activity.class;
+            case 2:
+                return Story2Activity.class;
+            case 3:
+                return Story3Activity.class;
+            // 4~9번 스토리는 아직 구현되지 않았으므로 임시로 Story2Activity 사용
+            case 4:
+                return Story2Activity.class;
+            case 5:
+                return Story2Activity.class;
+            case 6:
+                return Story2Activity.class;
+            case 7:
+                return Story2Activity.class;
+            case 8:
+                return Story2Activity.class;
+            case 9:
+                return Story2Activity.class; // 임시로 Story2Activity 사용
+            default:
+                return null;
         }
     }
 

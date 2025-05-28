@@ -1,5 +1,6 @@
 package com.example.neurolearning.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameProgressRepository; // 추가
 
 public class CrossWordGameActivity extends AppCompatActivity {
 
@@ -25,10 +27,29 @@ public class CrossWordGameActivity extends AppCompatActivity {
     private Word[] words;
     private int currentWordIndex = 0;
 
+    // DB 관련 추가
+    private GameProgressRepository gameProgressRepository;
+    private String currentUsername;
+    private int currentStoryNumber;
+    private long gameStartTime;
+    private int correctAnswers = 0; // 정답 개수
+    private int totalAttempts = 0;  // 총 시도 횟수
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crossword_game);
+
+        // 사용자 정보 가져오기 (추가)
+        currentUsername = getIntent().getStringExtra("username");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 1);
+        if (currentUsername == null) {
+            currentUsername = "testuser";
+        }
+
+        // Repository 초기화 및 게임 시작 시간 기록 (추가)
+        gameProgressRepository = new GameProgressRepository(getApplication());
+        gameStartTime = System.currentTimeMillis();
 
         gridLayout = findViewById(R.id.gridLayout);
         tvNumber = findViewById(R.id.tvNumber);
@@ -74,7 +95,6 @@ public class CrossWordGameActivity extends AppCompatActivity {
         }
     }
 
-
     private void showCurrentWord() {
         Word w = words[currentWordIndex];
         tvNumber.setText(String.valueOf(w.number));
@@ -92,12 +112,11 @@ public class CrossWordGameActivity extends AppCompatActivity {
                     board[r][c].view.setBackgroundColor(Color.parseColor("#BBDEFB"));  // 초기 배경으로 복원
                 } else {
                     showWordSet();
-                    board[r][c].view.setBackgroundColor(Color.YELLOW);  // 정답 입력된 칸은 하얀색 유지
+                    board[r][c].view.setBackgroundColor(Color.YELLOW);  // 정답 입력된 칸은 노란색 유지
                     board[r][c].view.setText(String.valueOf(word.answer.charAt(i)));
                 }
             }
         }
-
 
         for (int i = 0; i < w.answer.length(); i++) {
             int r = w.startRow + (w.vertical ? i : 0);
@@ -109,26 +128,75 @@ public class CrossWordGameActivity extends AppCompatActivity {
     private void checkAnswer() {
         String input = etAnswer.getText().toString().trim();
         Word w = words[currentWordIndex];
+        totalAttempts++; // 시도 횟수 증가 (추가)
+
         if (input.equals(w.answer)) {
             Toast.makeText(this, "정답입니다!", Toast.LENGTH_SHORT).show();
+            correctAnswers++; // 정답 개수 증가 (추가)
             w.filled = true;
+
             for (int i = 0; i < w.answer.length(); i++) {
                 int r = w.startRow + (w.vertical ? i : 0);
                 int c = w.startCol + (w.vertical ? 0 : i);
                 board[r][c].view.setText(String.valueOf(w.answer.charAt(i)));
                 board[r][c].view.setBackgroundColor(Color.YELLOW);
             }
+
             currentWordIndex++;
             if (currentWordIndex < words.length) {
                 showCurrentWord();
             } else {
-                tvHint.setText("게임 완료! 축하합니다.");
-                etAnswer.setEnabled(false);
-                btnCheck.setEnabled(false);
+                // 게임 완료 처리 (수정)
+                completeGame();
             }
         } else {
             Toast.makeText(this, "오답입니다. 다시 시도해보세요!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // 게임 완료 처리 메서드 (추가)
+    private void completeGame() {
+        // UI 비활성화
+        tvHint.setText("게임 완료! 축하합니다.");
+        etAnswer.setEnabled(false);
+        btnCheck.setEnabled(false);
+
+        // 게임 결과 계산
+        long completionTime = System.currentTimeMillis() - gameStartTime;
+        int score = calculateScore(); // 점수 계산
+        int mistakes = totalAttempts - correctAnswers; // 실수 횟수
+
+        // DB에 게임 기록 저장
+        gameProgressRepository.saveGamePlayRecord(
+                currentUsername,
+                currentStoryNumber,
+                "CROSSWORD", // 게임 타입
+                score,
+                true, // 성공
+                mistakes,
+                completionTime / 1000 // 초 단위로 변환
+        );
+
+        // 잠시 후 완료 메시지와 함께 Story1Activity로 이동
+        new android.os.Handler().postDelayed(() -> {
+            Toast.makeText(this, "수고하셨습니다!", Toast.LENGTH_LONG).show();
+
+            // Story1Activity로 결과 전달하며 이동
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("score", score);
+            resultIntent.putExtra("completionTime", completionTime);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }, 1500); // 1.5초 후 실행
+    }
+
+    // 점수 계산 메서드 (추가)
+    private int calculateScore() {
+        // 기본 점수 100점에서 실수할 때마다 -5점
+        int baseScore = 100;
+        int mistakes = totalAttempts - correctAnswers;
+        int finalScore = Math.max(baseScore - (mistakes * 5), 10); // 최소 10점 보장
+        return finalScore;
     }
 
     private void handleCellClick(int row, int col) {
@@ -160,7 +228,6 @@ public class CrossWordGameActivity extends AppCompatActivity {
                 new Word(9, 5, 5, true, "우산", "비 올 때 쓰는 소형 장막")
         };
     }
-
 
     static class Square {
         TextView view;

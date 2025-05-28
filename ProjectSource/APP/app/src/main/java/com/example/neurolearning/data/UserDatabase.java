@@ -5,11 +5,14 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class, UserGameStatus.class, StoryStatus.class, GamePlayRecord.class},
+        version = 2,
+        exportSchema = false)
 public abstract class UserDatabase extends RoomDatabase {
     private static UserDatabase instance;
 
     public abstract UserDao userDao();
+    public abstract GameProgressDao gameProgressDao();
 
     public static synchronized UserDatabase getInstance(Context context) {
         if (instance == null) {
