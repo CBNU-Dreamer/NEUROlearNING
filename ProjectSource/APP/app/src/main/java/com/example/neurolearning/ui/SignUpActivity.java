@@ -146,7 +146,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         Button testButton = findViewById(R.id.button);
         testButton.setOnClickListener(v -> {
-            Intent testintent = new Intent(SignUpActivity.this, StoryActivity.class);
+            Intent testintent = new Intent(SignUpActivity.this, SignInActivity.class);
             startActivity(testintent);
         });
 

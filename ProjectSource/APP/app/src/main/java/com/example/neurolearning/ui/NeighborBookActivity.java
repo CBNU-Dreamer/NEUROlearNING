@@ -1,31 +1,33 @@
 package com.example.neurolearning.ui;
 
-import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository;
-import com.example.neurolearning.data.UserGameStatus;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameProgressRepository;
 import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class NeighborBookActivity extends AppCompatActivity {
+    private static final String TAG = "NeighborBookActivity";
 
     private GameProgressRepository gameProgressRepository;
-    private String currentUsername; // 로그인한 사용자 정보
-    private int unlockedStoryCount = 1; // 해제된 스토리 수 (기본값 1개)
+    private String currentUsername;
+    private int unlockedStoryCount = 1; // 기본값 1개
 
-    // 데이터 모델: 각 이웃당 이미지, 이름, 설명
+    // 데이터 모델
     static class Neighbor {
         int imageRes;
         String name;
@@ -42,40 +44,72 @@ public class NeighborBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_neighborbook);
 
-        // 로그인한 사용자 정보 가져오기
+        // 사용자 정보 가져오기
         currentUsername = getIntent().getStringExtra("username");
         if (currentUsername == null) {
-            currentUsername = "testuser"; // 임시값
+            currentUsername = "testuser";
         }
+        Log.d(TAG, "NeighborBookActivity 시작: " + currentUsername);
 
         // Repository 초기화
         gameProgressRepository = new GameProgressRepository(getApplication());
 
-        // 1) 툴바 뒤로가기 설정
+        // 툴바 설정
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 2) 사용자의 게임 진행상황 관찰 및 UI 업데이트
+        // 🎯 사용자 게임 진행상황 관찰 및 UI 업데이트
         observeUserGameStatus();
     }
 
     private void observeUserGameStatus() {
         gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
+            Log.d("NeighborBookActivity", "LiveData 콜백: " + (userGameStatus != null ? "데이터 있음" : "null"));
+
             if (userGameStatus != null) {
-                // 완료된 스토리 수 + 1 = 현재 진행 가능한 스토리까지 해제
+                // 정상 케이스
                 unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
+                Log.d("NeighborBookActivity", "해제된 스토리: " + unlockedStoryCount + "개");
                 setupNeighborList();
             } else {
-                // 게임 현황이 없으면 초기화
-                gameProgressRepository.initializeUserGameStatus(currentUsername);
-                unlockedStoryCount = 1; // 첫 번째 스토리만 해제
+                Log.d("NeighborBookActivity", "데이터 null - 2.5초 후 재확인...");
+
+                new android.os.Handler().postDelayed(() -> {
+                    gameProgressRepository.getUserGameStatus(currentUsername).observe(this, retryStatus -> {
+                        if (retryStatus != null) {
+                            unlockedStoryCount = retryStatus.totalCompletedStories + 1;
+                            Log.d("NeighborBookActivity", "재확인 성공: " + unlockedStoryCount + "개 해제");
+                        } else {
+                            Log.d("NeighborBookActivity", "신규 사용자 - 초기화 실행");
+                            gameProgressRepository.initializeUserGameStatus(currentUsername);
+                            unlockedStoryCount = 1;
+                        }
+                        setupNeighborList();
+                    });
+                }, 2500); // 🎯 2.5초
+            }
+        });
+    }
+
+    // 🎯 초기화 후 재확인 메서드
+    private void recheckUserGameStatus() {
+        gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
+            if (userGameStatus != null) {
+                unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
+                Log.d(TAG, "🔄 재확인 성공: 해제된 스토리 " + unlockedStoryCount + "개");
+                setupNeighborList();
+            } else {
+                Log.w(TAG, "⚠️ 재확인에도 사용자 상태 없음 - 기본값 사용");
+                unlockedStoryCount = 1;
                 setupNeighborList();
             }
         });
     }
 
     private void setupNeighborList() {
+        Log.d(TAG, "이웃 목록 설정: " + unlockedStoryCount + "개 스토리 해제됨");
+
         // 전체 이웃 데이터 준비 (9명)
         List<Neighbor> allNeighbors = new ArrayList<>();
         allNeighbors.add(new Neighbor(R.drawable.neighbor1, "편의점 직원 배수연",
@@ -99,16 +133,16 @@ public class NeighborBookActivity extends AppCompatActivity {
 
         // 컨테이너에 동적 Inflate
         LinearLayout container = findViewById(R.id.llContainer);
-        container.removeAllViews(); // 기존 뷰 제거
+        container.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (int i = 0; i < allNeighbors.size(); i++) {
             View item = inflater.inflate(R.layout.neighbor_item, container, false);
 
-            ImageView iv   = item.findViewById(R.id.ivNeighborImage);
-            TextView name  = item.findViewById(R.id.tvNeighborName);
-            TextView desc  = item.findViewById(R.id.tvNeighborDesc);
-            Button   play  = item.findViewById(R.id.btnPlayNeighbor);
+            ImageView iv = item.findViewById(R.id.ivNeighborImage);
+            TextView name = item.findViewById(R.id.tvNeighborName);
+            TextView desc = item.findViewById(R.id.tvNeighborDesc);
+            Button play = item.findViewById(R.id.btnPlayNeighbor);
 
             if (i < unlockedStoryCount) {
                 // 🔓 UNLOCKED - 해제된 스토리
@@ -119,9 +153,9 @@ public class NeighborBookActivity extends AppCompatActivity {
                 play.setText("게임을 진행해주세요!");
                 play.setEnabled(true);
 
-                // 스토리로 이동하는 클릭 리스너
                 final int storyNumber = i + 1;
                 play.setOnClickListener(v -> {
+                    Log.d(TAG, "스토리 " + storyNumber + " 클릭");
                     Intent intent = new Intent(this, StoryActivity.class);
                     intent.putExtra("storyNumber", storyNumber);
                     intent.putExtra("username", currentUsername);
@@ -130,13 +164,15 @@ public class NeighborBookActivity extends AppCompatActivity {
             } else {
                 // 🔒 LOCKED - 잠긴 스토리
                 iv.setImageResource(R.drawable.ic_lock);
-                name.setText("");
-                desc.setText("");
+                name.setText("???");
+                desc.setText("이전 스토리를 완료하면 해제됩니다.");
                 play.setText("잠겨있음");
                 play.setEnabled(false);
             }
 
             container.addView(item);
         }
+
+        Log.d(TAG, "이웃 목록 설정 완료: " + allNeighbors.size() + "개 아이템");
     }
 }
