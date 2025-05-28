@@ -3,14 +3,10 @@ package com.example.neurolearning.data;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "game_play_record",
-        foreignKeys = @ForeignKey(entity = StoryStatus.class,
-                parentColumns = {"username", "story_number"},
-                childColumns = {"username", "story_number"},
-                onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "game_play_record")
+// 🎯 Foreign Key 완전 제거 - 참조 무결성보다 안정성 우선
 public class GamePlayRecord {
 
     @PrimaryKey(autoGenerate = true)
@@ -25,22 +21,22 @@ public class GamePlayRecord {
     public int storyNumber;
 
     @ColumnInfo(name = "game_type")
-    public String gameType;  // "KIOSK", "MEMORY", "PUZZLE" 등
+    public String gameType;
 
     @ColumnInfo(name = "score")
     public int score;
 
     @ColumnInfo(name = "is_success")
-    public boolean isSuccess;  // 성공/실패 여부
+    public boolean isSuccess;
 
     @ColumnInfo(name = "play_date")
     public long playDate;
 
     @ColumnInfo(name = "mistakes_count")
-    public int mistakesCount;  // 실수 횟수
+    public int mistakesCount;
 
     @ColumnInfo(name = "completion_time")
-    public long completionTime;  // 완료 시간 (초)
+    public long completionTime;
 
     public GamePlayRecord(@NonNull String username, int storyNumber, String gameType,
                           int score, boolean isSuccess, long playDate,
