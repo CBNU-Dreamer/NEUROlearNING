@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#FFF9F0">
 
         <!-- 이웃/락 이미지 -->
 
@@ -31,23 +32,23 @@
             android:id="@+id/tvNeighborName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/ivNeighborImage"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/ivNeighborImage" />
 
         <!-- 이웃 설명 (언락 시) -->
         <TextView
             android:id="@+id/tvNeighborDesc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/tvNeighborName"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tvNeighborName" />
 
         <!-- 버튼: 언락 시 “게임을 진행해주세요!”, 락 시 “잠겨있음” -->
         <Button
@@ -55,9 +56,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:backgroundTint="#F57C00"
             android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@id/tvNeighborDesc"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tvNeighborDesc"
+            app:strokeWidth="1dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

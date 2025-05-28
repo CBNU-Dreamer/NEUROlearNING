@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,11 +45,15 @@ public class UserInfoActivity extends AppCompatActivity {
         btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
         btnModify = findViewById(R.id.btnModify);
 
+        String username = getIntent().getStringExtra("username");
+        loadUserInfo(username);
+
         // 아이디는 수정 불가
         etUserId.setEnabled(false);
 
-        String username = getIntent().getStringExtra("username");
-        loadUserInfo(username);
+        // 사용자 데이터 로딩 (가정: 아이디는 이미 로그인한 사용자라면 전달됨)
+        //loadUserInfo("temp0004");  // 나중에 intent나 SharedPref로 대체
+        //loadUserInfo("yourid");  // 나중에 intent나 SharedPref로 대체
 
         // 수정 버튼 클릭 시
         btnModify.setOnClickListener(v -> updateUserInfo());
@@ -63,6 +68,8 @@ public class UserInfoActivity extends AppCompatActivity {
         // 🎯 DB에서 사용자 정보 가져와서 currentUser에 저장
         currentUser = userViewModel.getUserById(userId);
         if (currentUser != null) {
+            TextView tvTitle = findViewById(R.id.tvTitle);
+            tvTitle.setText(currentUser.getName() + "님의 정보입니다!");
             // 🎯 setText 대신 setHint 사용 - 기존 값이 placeholder로 표시됨
             etUserId.setText(currentUser.getId());
             etPassword.setHint("현재: " + currentUser.getPassword());

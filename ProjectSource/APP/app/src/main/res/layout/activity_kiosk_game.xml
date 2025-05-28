@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF9F0"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <!-- 뒤로가기 아이콘 -->
     <ImageView
         android:id="@+id/ivBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_back"
-        android:contentDescription="Back"/>
+        android:contentDescription="Back"
+        android:src="@drawable/ic_arrow_back" />
 
     <!-- 타이틀 -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="8dp"
         android:text="키오스크를 사용해봐요!"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"/>
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <!-- 서브타이틀 -->
     <TextView
         android:id="@+id/tvSubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="4dp"
         android:textColor="#4CAF50"
-        android:textSize="16sp"
-        android:paddingTop="4dp"/>
+        android:textSize="16sp" />
 
     <!-- 단계별 컨텐츠 교체 영역 -->
     <FrameLayout
@@ -38,5 +39,5 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="8dp"/>
+        android:paddingTop="8dp" />
 </LinearLayout>
