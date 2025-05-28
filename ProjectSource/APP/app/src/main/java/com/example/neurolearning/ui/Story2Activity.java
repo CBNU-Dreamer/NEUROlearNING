@@ -12,18 +12,33 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameProgressRepository; // 추가
 
 public class Story2Activity extends AppCompatActivity {
     private static final int REQ_KIOSK = 100;
     private FrameLayout contentFrame;
+
+    // DB 관련 추가
+    private GameProgressRepository gameProgressRepository;
+    private String currentUsername;
+    private int currentStoryNumber = 2; // Story2Activity이므로 2번 스토리
+    private long gameStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story2);
 
-        contentFrame = findViewById(R.id.contentFrame);
+        // 사용자 정보 가져오기 (추가)
+        currentUsername = getIntent().getStringExtra("username");
+        if (currentUsername == null) {
+            currentUsername = "testuser"; // 임시값
+        }
 
+        // Repository 초기화 (추가)
+        gameProgressRepository = new GameProgressRepository(getApplication());
+
+        contentFrame = findViewById(R.id.contentFrame);
         showInitialScreen();
     }
 
@@ -34,7 +49,12 @@ public class Story2Activity extends AppCompatActivity {
         Button btn = initial.findViewById(R.id.btnStartGame);
 
         btn.setOnClickListener(v -> {
+            gameStartTime = System.currentTimeMillis(); // 게임 시작 시간 기록 (추가)
+
             Intent intent = new Intent(Story2Activity.this, KioskGameActivity.class);
+            // 사용자 정보 전달 (추가)
+            intent.putExtra("username", currentUsername);
+            intent.putExtra("storyNumber", currentStoryNumber);
             startActivityForResult(intent, REQ_KIOSK);
         });
 
@@ -45,6 +65,24 @@ public class Story2Activity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_KIOSK && resultCode == RESULT_OK) {
+            // 게임 성공 시 DB 업데이트 (추가 부분)
+            long completionTime = System.currentTimeMillis() - gameStartTime;
+            int score = data != null ? data.getIntExtra("score", 100) : 100; // 기본 점수
+
+            // 1. 게임 플레이 기록 저장
+            gameProgressRepository.saveGamePlayRecord(
+                    currentUsername,
+                    currentStoryNumber,
+                    "KIOSK",
+                    score,
+                    true,
+                    0,
+                    completionTime / 1000 // 초 단위로 변환
+            );
+
+            // 2. 스토리 완료 처리 (다음 스토리 해제)
+            gameProgressRepository.completeStory(currentUsername, currentStoryNumber);
+
             showEndScreen();
         } else if (requestCode == REQ_KIOSK) {
             Toast.makeText(this, "게임이 정상 종료되지 않았습니다.", Toast.LENGTH_SHORT).show();
