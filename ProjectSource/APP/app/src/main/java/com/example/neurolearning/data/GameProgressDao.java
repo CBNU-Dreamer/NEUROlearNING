@@ -20,7 +20,7 @@ public interface GameProgressDao {
     void updateUserGameStatus(UserGameStatus userGameStatus);
 
     @Query("SELECT * FROM user_game_status WHERE username = :username")
-    LiveData<UserGameStatus> getUserGameStatus(String username);
+    LiveData<UserGameStatus>getUserGameStatus(String username);
 
     @Query("UPDATE user_game_status SET current_story = :currentStory, total_completed_stories = :completedCount WHERE username = :username")
     void updateUserProgress(String username, int currentStory, int completedCount);

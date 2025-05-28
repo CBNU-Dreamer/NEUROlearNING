@@ -7,10 +7,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< HEAD
+
 import androidx.activity.OnBackPressedCallback;
-=======
->>>>>>> feature/Story
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -39,12 +38,9 @@ public class SignInActivity extends AppCompatActivity {
 
         // 이벤트 리스너 설정
         setClickListeners();
-<<<<<<< HEAD
 
         // 뒤로가기 콜백 설정
         setupBackPressedCallback();
-=======
->>>>>>> feature/Story
     }
 
     private void initViews() {
@@ -112,7 +108,6 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-<<<<<<< HEAD
     // 뒤로가기 버튼 처리 (새로운 방식)
     private void setupBackPressedCallback() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -125,6 +120,5 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
-=======
->>>>>>> feature/Story
+
 }
