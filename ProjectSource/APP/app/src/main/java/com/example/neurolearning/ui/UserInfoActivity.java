@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,11 +43,14 @@ public class UserInfoActivity extends AppCompatActivity {
         btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
         btnModify = findViewById(R.id.btnModify);
 
+        String username = getIntent().getStringExtra("username");
+        loadUserInfo(username);
+
         // 아이디는 수정 불가
         etUserId.setEnabled(false);
 
         // 사용자 데이터 로딩 (가정: 아이디는 이미 로그인한 사용자라면 전달됨)
-        loadUserInfo("yourid");  // 나중에 intent나 SharedPref로 대체
+        //loadUserInfo("temp0004");  // 나중에 intent나 SharedPref로 대체
 
         // 수정 버튼 클릭 시
         btnModify.setOnClickListener(v -> updateUserInfo());
@@ -58,19 +62,22 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void loadUserInfo(String userId) {
-        // DB에서 가져오기
         User user = userViewModel.getUserById(userId);
         if (user != null) {
+            TextView tvTitle = findViewById(R.id.tvTitle);
+            tvTitle.setText(user.getName() + "님의 정보입니다!");
+
             etUserId.setText(user.getId());
-            etPassword.setHint(user.getPassword());
-            etName.setHint(user.getName());
-            etAge.setHint(user.getAge() + "세");
-            etPhone.setHint(user.getPhone());
-            etAddress.setHint(user.getAddress());
-            etGuardian.setHint(user.getGuardianPhone());
-            etDisease.setHint(user.getDisease());
+            etPassword.setText(user.getPassword());
+            etName.setText(user.getName());
+            etAge.setText(String.valueOf(user.getAge()));
+            etPhone.setText(user.getPhone());
+            etAddress.setText(user.getAddress());
+            etGuardian.setText(user.getGuardianPhone());
+            etDisease.setText(user.getDisease());
         }
     }
+
 
     private void updateUserInfo() {
         String id = etUserId.getText().toString();

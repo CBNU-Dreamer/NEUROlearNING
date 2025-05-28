@@ -83,8 +83,8 @@ public class Story1Activity extends AppCompatActivity {
 
             // 2. 스토리 완료 처리 (다음 스토리 해제)
             gameProgressRepository.completeStory(currentUsername, currentStoryNumber);
-
             showEndScreen();
+
         } else if (requestCode == REQ_GAME) {
             Toast.makeText(this, "게임이 정상 종료되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
