@@ -13,8 +13,14 @@
     <!-- 클릭 가능, 포커스 가능 -->
     android:clickable="true"
     android:focusable="true"
-    <!-- 터치 시 머티리얼 Ripple 효과 -->
+    <!-- 터치 시 머티리얼 Ripple 효과 --><![CDATA[
     android:foreground="?attr/selectableItemBackground">
+
+
+
+
+
+    ]]>
 
     <TextView
         android:id="@+id/textSubtitle"
