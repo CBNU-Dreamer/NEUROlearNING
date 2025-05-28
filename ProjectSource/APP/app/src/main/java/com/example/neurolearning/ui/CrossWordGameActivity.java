@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -14,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository; // 추가
+import com.example.neurolearning.data.GameProgressRepository;
 
 public class CrossWordGameActivity extends AppCompatActivity {
 
@@ -219,11 +218,11 @@ public class CrossWordGameActivity extends AppCompatActivity {
         return new Word[]{
                 new Word(1, 0, 1, false, "연고", "피부에 바르는 약"),
                 new Word(2, 0, 2, true, "고구마", "달콤한 구황작물"),
-                new Word(4, 0, 5, true, "과자", "달콤한 간식"),
                 new Word(3, 1, 2, false, "구급상자", "응급 처치 도구 상자"),
+                new Word(4, 0, 5, true, "과자", "달콤한 간식"),
                 new Word(5, 3, 4, false, "소화제", "속이 안 좋을 때 먹는 약"),
-                new Word(7, 3, 4, true, "소시지", "육가공품"),
                 new Word(6, 4, 3, false, "접시", "음식을 담는 그릇"),
+                new Word(7, 3, 4, true, "소시지", "육가공품"),
                 new Word(8, 5, 4, false, "지우개", "연필 흔적 지우는 것"),
                 new Word(9, 5, 5, true, "우산", "비 올 때 쓰는 소형 장막")
         };

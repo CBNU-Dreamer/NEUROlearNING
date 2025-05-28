@@ -68,16 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
                 return;
             }
 
-            int year = 0, month = 0, day = 0;
 
-            try {
-                year = Integer.parseInt(strYear);
-                month = Integer.parseInt(strMonth);
-                day = Integer.parseInt(strDay);
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "생년월일은 숫자로 입력해주세요!", Toast.LENGTH_SHORT).show();
-                return; // 가입 중단
-            }
 
             // 선택 항목이 비어있다면 기본값("")으로 저장
             if (guardianPhone.isEmpty()) guardianPhone = "";
@@ -99,6 +90,17 @@ public class SignUpActivity extends AppCompatActivity {
             if (!name.matches("^[가-힣]{1,20}$")) {
                 editTextName.setError("이름은 공백 없이 한글만 입력하세요.");
                 return;
+            }
+
+            int year = 0, month = 0, day = 0;
+
+            try {
+                year = Integer.parseInt(strYear);
+                month = Integer.parseInt(strMonth);
+                day = Integer.parseInt(strDay);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "생년월일은 숫자로 입력해주세요!", Toast.LENGTH_SHORT).show();
+                return; // 가입 중단
             }
 
             // 생년월일 범위 조건 확인
