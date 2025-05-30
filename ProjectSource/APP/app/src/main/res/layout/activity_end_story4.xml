@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF9F0"
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:gravity="center">
+
+    <!-- NPC 대화 -->
+    <TextView
+        android:id="@+id/tvNpcDialog"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@drawable/ic_rounded"
+        android:padding="20dp"
+        android:text="정말 잘 따라오셨어요!\n이제 방향 기억은 문제없겠네요 :)"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <!-- 게임 종료 이미지 -->
+    <ImageView
+        android:id="@+id/ivEndImage"
+        android:layout_width="391dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:src="@drawable/neighbor4" />
+
+    <!-- 다음으로 이동 버튼 -->
+    <Button
+        android:id="@+id/btnEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#F57C00"
+        android:text="다음에 또 만나요!"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+</LinearLayout>

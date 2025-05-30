@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FFF9F0"
+    android:gravity="center_horizontal">
+
+    <!-- 상단 타이틀 -->
+    <TextView
+        android:id="@+id/tvGameTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="강아지 찾기 게임"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:layout_marginBottom="12dp" />
+
+    <!-- 지시 문구 -->
+    <TextView
+        android:id="@+id/tvInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="방향을 잘 보고 기억해서 따라 입력하세요!"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="#555555"
+        android:layout_marginBottom="20dp" />
+
+    <!-- NPC 대화 말풍선 -->
+    <TextView
+        android:id="@+id/tvNpcTalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_rounded"
+        android:padding="14dp"
+        android:text="강아지가 어디로 갔냐면..."
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 화살표 보여주는 영역 -->
+    <ImageView
+        android:id="@+id/ivArrowShow"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/arrow_up_custom"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:visibility="invisible"
+        android:layout_gravity="center" />
+
+    <!-- 응원/중간 피드백/정답/오답 메시지창  -->
+    <TextView
+        android:id="@+id/tvFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF8E1"
+        android:text="화이팅! 강아지를 잘 따라가보세요 🐶"
+        android:textColor="#4E342E"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        />
+
+
+    <!-- 사용자 입력 화살표 7개 들어가는 공간 -->
+    <LinearLayout
+        android:id="@+id/layoutUserInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp" />
+
+    <!-- 방향 입력 버튼 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnUp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:src="@drawable/arrow_up_custom"
+            android:contentDescription="Up" />
+
+        <ImageButton
+            android:id="@+id/btnDown"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:src="@drawable/arrow_down_custom"
+            android:contentDescription="Down" />
+
+        <ImageButton
+            android:id="@+id/btnLeft"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:src="@drawable/arrow_left_custom"
+            android:contentDescription="Left" />
+
+        <ImageButton
+            android:id="@+id/btnRight"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:src="@drawable/arrow_right_custom"
+            android:contentDescription="Right" />
+    </LinearLayout>
+
+</LinearLayout>

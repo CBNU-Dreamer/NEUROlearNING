@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#FFF9F0"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- NPC 대사 -->
+    <TextView
+        android:id="@+id/tvNpcDialog"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@drawable/ic_rounded"
+        android:padding="20dp"
+        android:text="강아지를 찾아주는 방향게임 NPC 대사"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <!-- 강아지 이미지 -->
+    <ImageView
+        android:id="@+id/ivDogImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:src="@drawable/puppy_image" />
+
+    <!-- 시작 버튼 -->
+    <Button
+        android:id="@+id/btnStartGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#F57C00"
+        android:text="강아지를 찾아줄게요!"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+</LinearLayout>
