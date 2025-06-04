@@ -167,15 +167,15 @@ public class StoryActivity extends AppCompatActivity {
                 return Story3Activity.class;
             // 4~9번 스토리는 아직 구현되지 않았으므로 임시로 Story2Activity 사용
             case 4:
-                return Story2Activity.class;
+                return Story4Activity.class;
             case 5:
-                return Story2Activity.class;
+                return Story5Activity.class;
             case 6:
-                return Story2Activity.class;
+                return Story6Activity.class;
             case 7:
-                return Story2Activity.class;
+                return Story7Activity.class;
             case 8:
-                return Story2Activity.class;
+                return Story8Activity.class;
             case 9:
                 return Story2Activity.class; // 임시로 Story2Activity 사용
             default:

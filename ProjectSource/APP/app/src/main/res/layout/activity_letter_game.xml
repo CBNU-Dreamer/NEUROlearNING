@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ActionBar 영역 (툴바 대신 기본 액션바를 사용하므로 여백만 둡니다) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent" />
+
+    <!-- 제목 텍스트 -->
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="사랑하는 손녀에게\n무슨 말을 해주는 게 좋을까요?"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"/>
+
+    <!-- 버튼들을 담는 ScrollView (여러 해상도에서 스크롤 가능하도록) -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <!-- 1) 흥 공부나 해 -->
+            <Button
+                android:id="@+id/btn_msg1"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_pink_button"
+                android:text="흥 공부나 해"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+            <!-- 2) 흥 귀찮아 -->
+            <Button
+                android:id="@+id/btn_msg2"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_pink_button"
+                android:text="흥 귀찮아"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+            <!-- 3) 고마워 사랑해 -->
+            <Button
+                android:id="@+id/btn_msg3"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_pink_button"
+                android:text="고마워 사랑해"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+            <!-- 4) 흥 학교나 가 -->
+            <Button
+                android:id="@+id/btn_msg4"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_pink_button"
+                android:text="흥 학교나 가"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+            <!-- 5) 흥 잠이나 자 -->
+            <Button
+                android:id="@+id/btn_msg5"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_pink_button"
+                android:text="흥 잠이나 자"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
