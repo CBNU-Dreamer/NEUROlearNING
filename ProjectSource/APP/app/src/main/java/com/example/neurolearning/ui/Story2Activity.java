@@ -2,6 +2,7 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,16 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository; // 추가
+import com.example.neurolearning.data.GameRecordRepository;
 
 public class Story2Activity extends AppCompatActivity {
+    private static final String TAG = "Story2Activity";
     private static final int REQ_KIOSK = 100;
-    private FrameLayout contentFrame;
 
-    // DB 관련 추가
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
-    private int currentStoryNumber = 2; // Story2Activity이므로 2번 스토리
+    private FrameLayout contentFrame;
+    private GameRecordRepository gameRecordRepository;
+
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber;
     private long gameStartTime;
 
     @Override
@@ -29,14 +32,21 @@ public class Story2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story2);
 
-        // 사용자 정보 가져오기 (추가)
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser"; // 임시값
+        // 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 2);
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Repository 초기화 (추가)
-        gameProgressRepository = new GameProgressRepository(getApplication());
+        Log.d(TAG, "Story" + currentStoryNumber + "Activity 시작: " + currentUserName);
+
+        // Repository 초기화
+        gameRecordRepository = new GameRecordRepository(getApplication());
 
         contentFrame = findViewById(R.id.contentFrame);
         showInitialScreen();
@@ -49,11 +59,11 @@ public class Story2Activity extends AppCompatActivity {
         Button btn = initial.findViewById(R.id.btnStartGame);
 
         btn.setOnClickListener(v -> {
-            gameStartTime = System.currentTimeMillis(); // 게임 시작 시간 기록 (추가)
+            gameStartTime = System.currentTimeMillis();
 
             Intent intent = new Intent(Story2Activity.this, KioskGameActivity.class);
-            // 사용자 정보 전달 (추가)
-            intent.putExtra("username", currentUsername);
+            intent.putExtra("userId", currentUserId);
+            intent.putExtra("userName", currentUserName);
             intent.putExtra("storyNumber", currentStoryNumber);
             startActivityForResult(intent, REQ_KIOSK);
         });
@@ -64,24 +74,25 @@ public class Story2Activity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_KIOSK && resultCode == RESULT_OK) {
-            // 게임 성공 시 DB 업데이트 (추가 부분)
-            long completionTime = System.currentTimeMillis() - gameStartTime;
-            int score = data != null ? data.getIntExtra("score", 100) : 100; // 기본 점수
 
-            // 1. 게임 플레이 기록 저장
-            gameProgressRepository.saveGamePlayRecord(
-                    currentUsername,
+        if (requestCode == REQ_KIOSK && resultCode == RESULT_OK) {
+            // 게임 성공 시 DB 업데이트
+            long completionTime = System.currentTimeMillis() - gameStartTime;
+            int score = data != null ? data.getIntExtra("score", 100) : 100;
+
+            Log.d(TAG, "✅ Story" + currentStoryNumber + " 키오스크 게임 완료 - 점수: " + score + ", 소요시간: " + (completionTime/1000) + "초");
+
+            // 🎯 새로운 DB 구조에 맞는 게임 기록 저장
+            gameRecordRepository.saveGameRecord(
+                    currentUserId,
+                    currentUserName,
                     currentStoryNumber,
                     "KIOSK",
                     score,
-                    true,
-                    0,
-                    completionTime / 1000 // 초 단위로 변환
+                    true, // 성공
+                    0, // 키오스크 게임은 실수 횟수 측정 안함
+                    completionTime / 1000 // 초 단위
             );
-
-            // 2. 스토리 완료 처리 (다음 스토리 해제)
-            gameProgressRepository.completeStory(currentUsername, currentStoryNumber);
 
             showEndScreen();
         } else if (requestCode == REQ_KIOSK) {
@@ -95,7 +106,11 @@ public class Story2Activity extends AppCompatActivity {
                 .inflate(R.layout.activity_end_story2, contentFrame, false);
         Button btn = end.findViewById(R.id.btnEnd);
 
-        btn.setOnClickListener(v -> finish());
+        btn.setOnClickListener(v -> {
+            Log.d(TAG, "Story" + currentStoryNumber + " 완료 - StoryActivity로 복귀");
+            finish();
+        });
+
         contentFrame.addView(end);
     }
 }

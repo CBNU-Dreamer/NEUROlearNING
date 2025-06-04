@@ -6,7 +6,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "game_play_record")
-// 🎯 Foreign Key 완전 제거 - 참조 무결성보다 안정성 우선
 public class GamePlayRecord {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,8 +13,12 @@ public class GamePlayRecord {
     public int id;
 
     @NonNull
-    @ColumnInfo(name = "username")
-    public String username;
+    @ColumnInfo(name = "user_id") // 🎯 User의 UUID 참조
+    public String userId;
+
+    @NonNull
+    @ColumnInfo(name = "user_name") // 🎯 검색 편의를 위한 이름 저장
+    public String userName;
 
     @ColumnInfo(name = "story_number")
     public int storyNumber;
@@ -38,10 +41,12 @@ public class GamePlayRecord {
     @ColumnInfo(name = "completion_time")
     public long completionTime;
 
-    public GamePlayRecord(@NonNull String username, int storyNumber, String gameType,
-                          int score, boolean isSuccess, long playDate,
-                          int mistakesCount, long completionTime) {
-        this.username = username;
+    public GamePlayRecord(@NonNull String userId, @NonNull String userName,
+                          int storyNumber, String gameType, int score,
+                          boolean isSuccess, long playDate, int mistakesCount,
+                          long completionTime) {
+        this.userId = userId;
+        this.userName = userName;
         this.storyNumber = storyNumber;
         this.gameType = gameType;
         this.score = score;

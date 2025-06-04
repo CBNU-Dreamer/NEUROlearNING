@@ -1,8 +1,10 @@
 package com.example.neurolearning.ui;
 
+import android.content.Intent;
 import android.util.TypedValue;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +15,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KioskGameActivity extends AppCompatActivity {
+    private static final String TAG = "KioskGame";
+
     private TextView tvTitle, tvSubtitle;
     private FrameLayout contentFrame;
     private final List<CartItem> cart = new ArrayList<>();
+
+    // 🎯 새로운 DB 구조에 맞는 사용자 정보
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber;
+    private long gameStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kiosk_game);
 
-        tvTitle      = findViewById(R.id.tvTitle);
-        tvSubtitle   = findViewById(R.id.tvSubtitle);
+        // 🎯 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 2);
+
+        if (currentUserId == null) {
+            Log.e(TAG, "❌ 사용자 ID가 null입니다");
+            currentUserId = "unknown";
+            currentUserName = "Unknown User";
+        }
+
+        Log.d(TAG, "키오스크 게임 시작: " + currentUserName + " (Story " + currentStoryNumber + ")");
+
+        // 게임 시작 시간 기록
+        gameStartTime = System.currentTimeMillis();
+
+        initViews();
+        showStep1();
+    }
+
+    private void initViews() {
+        tvTitle = findViewById(R.id.tvTitle);
+        tvSubtitle = findViewById(R.id.tvSubtitle);
         contentFrame = findViewById(R.id.contentFrame);
 
         findViewById(R.id.ivBack).setOnClickListener(v -> finish());
-
-        showStep1();
     }
 
     private void showStep1() {
         tvTitle.setText("키오스크를 사용해봐요!");
         tvSubtitle.setText("1. 화면을 클릭하세요.");
         contentFrame.removeAllViews();
+
         View v = new View(this);
         v.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -48,6 +78,7 @@ public class KioskGameActivity extends AppCompatActivity {
     private void showStep2() {
         tvSubtitle.setText("2. 먹고가기를 선택하세요!");
         contentFrame.removeAllViews();
+
         LinearLayout lay = new LinearLayout(this);
         lay.setOrientation(LinearLayout.VERTICAL);
         lay.setGravity(Gravity.CENTER);
@@ -66,20 +97,11 @@ public class KioskGameActivity extends AppCompatActivity {
         contentFrame.addView(lay);
     }
 
-    // dp 변환 헬퍼
-    private int dp(int dp) {
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                getResources().getDisplayMetrics()
-        );
-    }
-
     private void showStep3() {
-        tvSubtitle.setText("3. “버거”를 선택하세요!");
+        tvSubtitle.setText("3. *버거*를 선택하세요!");
         contentFrame.removeAllViews();
 
-        // 1) 최상위 세로 레이아웃
+        // 키오스크 UI 구성
         LinearLayout parent = new LinearLayout(this);
         parent.setOrientation(LinearLayout.VERTICAL);
         parent.setLayoutParams(new FrameLayout.LayoutParams(
@@ -87,7 +109,7 @@ public class KioskGameActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
-        // 2) 파란 헤더
+        // 헤더
         TextView header = new TextView(this);
         header.setText("메뉴");
         header.setTextColor(Color.WHITE);
@@ -95,26 +117,23 @@ public class KioskGameActivity extends AppCompatActivity {
         header.setGravity(Gravity.CENTER);
         header.setBackgroundColor(Color.parseColor("#3F51B5"));
         parent.addView(header, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(48)
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(48)
         ));
 
-        // 3) 가운데 영역: 좌우 2분할
+        // 본문 영역
         LinearLayout body = new LinearLayout(this);
         body.setOrientation(LinearLayout.HORIZONTAL);
         body.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0, 1f
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
         ));
         parent.addView(body);
 
-        // 3-1) 왼쪽 네비(단일/세트/이벤트)
+        // 네비게이션
         LinearLayout nav = new LinearLayout(this);
         nav.setOrientation(LinearLayout.VERTICAL);
         nav.setBackgroundColor(Color.parseColor("#3F51B5"));
-        body.addView(nav, new LinearLayout.LayoutParams(
-                dp(48), ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        body.addView(nav, new LinearLayout.LayoutParams(dp(48), ViewGroup.LayoutParams.MATCH_PARENT));
+
         String[] tabs = {"단일","세트","이벤트"};
         for (String t: tabs) {
             TextView tv = new TextView(this);
@@ -122,12 +141,11 @@ public class KioskGameActivity extends AppCompatActivity {
             tv.setTextColor(Color.WHITE);
             tv.setGravity(Gravity.CENTER);
             nav.addView(tv, new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    0, 1f
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
             ));
         }
 
-        // 3-2) 오른쪽 컨텐츠 (회색 배경 + 2×2 버튼)
+        // 컨텐츠 영역
         FrameLayout content = new FrameLayout(this);
         content.setBackgroundColor(Color.LTGRAY);
         body.addView(content, new LinearLayout.LayoutParams(
@@ -149,6 +167,7 @@ public class KioskGameActivity extends AppCompatActivity {
             btn.setText(c);
             btn.setTextColor(Color.WHITE);
             btn.setBackgroundColor(Color.parseColor("#3F51B5"));
+
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
             lp.width = 0;
             lp.height = dp(80);
@@ -165,16 +184,14 @@ public class KioskGameActivity extends AppCompatActivity {
             });
         }
 
-        // 최종 붙이기
         contentFrame.addView(parent);
     }
 
-    /** 4단계: 버거 상세 선택 화면 **/
     private void showStep4() {
-        tvSubtitle.setText("4. “불고기 버거”를 드셔보실래요?");
+        tvSubtitle.setText("4. *불고기 버거*를 드셔보실래요?");
         contentFrame.removeAllViews();
 
-        // 1) 최상위 세로 레이아웃
+        // 버거 선택 UI (showStep3과 유사한 구조)
         LinearLayout parent = new LinearLayout(this);
         parent.setOrientation(LinearLayout.VERTICAL);
         parent.setLayoutParams(new FrameLayout.LayoutParams(
@@ -182,7 +199,7 @@ public class KioskGameActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
-        // 2) 파란 헤더
+        // 헤더
         TextView header = new TextView(this);
         header.setText("버거");
         header.setTextColor(Color.WHITE);
@@ -190,26 +207,23 @@ public class KioskGameActivity extends AppCompatActivity {
         header.setGravity(Gravity.CENTER);
         header.setBackgroundColor(Color.parseColor("#3F51B5"));
         parent.addView(header, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(48)
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(48)
         ));
 
-        // 3) 가운데 영역: 좌우 분할
+        // 본문 영역
         LinearLayout body = new LinearLayout(this);
         body.setOrientation(LinearLayout.HORIZONTAL);
         body.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0, 1f
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
         ));
         parent.addView(body);
 
-        // 3-1) 왼쪽 네비(단일/세트/이벤트)
+        // 네비게이션
         LinearLayout nav = new LinearLayout(this);
         nav.setOrientation(LinearLayout.VERTICAL);
         nav.setBackgroundColor(Color.parseColor("#3F51B5"));
-        body.addView(nav, new LinearLayout.LayoutParams(
-                dp(48), ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        body.addView(nav, new LinearLayout.LayoutParams(dp(48), ViewGroup.LayoutParams.MATCH_PARENT));
+
         String[] tabs = {"단일", "세트", "이벤트"};
         for (String t : tabs) {
             TextView tv = new TextView(this);
@@ -217,12 +231,11 @@ public class KioskGameActivity extends AppCompatActivity {
             tv.setTextColor(Color.WHITE);
             tv.setGravity(Gravity.CENTER);
             nav.addView(tv, new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    0, 1f
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
             ));
         }
 
-        // 3-2) 오른쪽 컨텐츠 (회색 + GridLayout)
+        // 컨텐츠 영역
         FrameLayout content = new FrameLayout(this);
         content.setBackgroundColor(Color.LTGRAY);
         body.addView(content, new LinearLayout.LayoutParams(
@@ -238,7 +251,7 @@ public class KioskGameActivity extends AppCompatActivity {
         glp.setMargins(dp(16), dp(16), dp(16), dp(16));
         content.addView(grid, glp);
 
-        // 4-1) 버거 버튼들
+        // 버거 버튼들
         String[] burgers = {"불고기 버거", "치킨 버거", "치즈 버거"};
         for (String b : burgers) {
             Button btn = new Button(this);
@@ -263,13 +276,13 @@ public class KioskGameActivity extends AppCompatActivity {
             });
         }
 
-        // 4-2) 최종 붙이기
         contentFrame.addView(parent);
     }
 
     private void showStep5() {
-        tvSubtitle.setText("5. 장바구니에 성공적으로 담겼습니다. “결제”를 눌러주세요!");
+        tvSubtitle.setText("5. 장바구니에 성공적으로 담겼습니다. *결제*를 눌러주세요!");
         contentFrame.removeAllViews();
+
         TableLayout table = new TableLayout(this);
         table.setStretchAllColumns(true);
 
@@ -299,9 +312,29 @@ public class KioskGameActivity extends AppCompatActivity {
 
     private void showStep6() {
         tvSubtitle.setText("6. 결제가 성공적으로 완료되었습니다!");
-        // 결과 반환
-        setResult(RESULT_OK);
+
+        // 🎯 게임 완료 처리
+        long completionTime = System.currentTimeMillis() - gameStartTime;
+        int score = 100; // 키오스크 게임은 완료하면 100점
+
+        Log.d(TAG, "✅ 키오스크 게임 완료");
+        Log.d(TAG, "점수: " + score + ", 시간: " + (completionTime/1000) + "초");
+
+        // Story2Activity로 결과 전달
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("score", score);
+        resultIntent.putExtra("completionTime", completionTime);
+        setResult(RESULT_OK, resultIntent);
         finish();
+    }
+
+    // dp 변환 헬퍼
+    private int dp(int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getResources().getDisplayMetrics()
+        );
     }
 
     private Button createBtn(String txt) {
@@ -324,7 +357,11 @@ public class KioskGameActivity extends AppCompatActivity {
     }
 
     private static class CartItem {
-        String name; int price;
-        CartItem(String n, int p) { name = n; price = p; }
+        String name;
+        int price;
+        CartItem(String n, int p) {
+            name = n;
+            price = p;
+        }
     }
 }

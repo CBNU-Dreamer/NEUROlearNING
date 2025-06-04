@@ -17,22 +17,35 @@ public interface UserDao {
     @Update
     void updateUser(User user);
 
-    // 기존 LiveData 방식 (비동기용)
-    @Query("SELECT * FROM user_table WHERE username = :username LIMIT 1")
-    LiveData<User> getUserByUsername(String username);
+    // 🎯 새로운 User.java의 로그인 방식에 맞춤 (이름 + 전화번호)
+    @Query("SELECT * FROM user_table WHERE name = :name AND phone = :phone LIMIT 1")
+    LiveData<User> getUserByNameAndPhone(String name, String phone);
 
+    // 동기 방식 (UserInfoActivity, 로그인 등에서 사용)
+    @Query("SELECT * FROM user_table WHERE name = :name AND phone = :phone LIMIT 1")
+    User getUserByNameAndPhoneSync(String name, String phone);
+
+    // 검색 키로 사용자 찾기 (내부적으로 사용)
+    @Query("SELECT * FROM user_table WHERE search_key = :searchKey LIMIT 1")
+    User getUserBySearchKey(String searchKey);
+
+    // 모든 사용자 조회
     @Query("SELECT * FROM user_table")
     LiveData<List<User>> getAllUsers();
 
-    // UserInfoActivity에서 사용할 동기 방식 메서드들 추가
-    @Query("SELECT * FROM user_table WHERE username = :username LIMIT 1")
-    User getUserByUsernameSync(String username);
+    // 사용자 존재 여부 확인 (이름 + 전화번호)
+    @Query("SELECT COUNT(*) FROM user_table WHERE name = :name AND phone = :phone")
+    int getUserCount(String name, String phone);
 
-    // 사용자 존재 여부 확인
-    @Query("SELECT COUNT(*) FROM user_table WHERE username = :username")
-    int getUserCount(String username);
+    // UUID로 사용자 조회 (내부적으로 사용)
+    @Query("SELECT * FROM user_table WHERE user_id = :userId LIMIT 1")
+    User getUserByIdSync(String userId);
 
-    // 로그인 검증용 (아이디와 비밀번호 확인)
-    @Query("SELECT * FROM user_table WHERE username = :username AND password = :password LIMIT 1")
-    User loginUser(String username, String password);
+    // 🎯 게임 진행 상황 업데이트 (User 테이블에서 직접 관리)
+    @Query("UPDATE user_table SET current_story = :currentStory, total_completed_stories = :completedStories WHERE user_id = :userId")
+    void updateGameProgress(String userId, int currentStory, int completedStories);
+
+    // 로그인 시간 업데이트
+    @Query("UPDATE user_table SET last_login = :loginTime WHERE user_id = :userId")
+    void updateLastLogin(String userId, long loginTime);
 }
