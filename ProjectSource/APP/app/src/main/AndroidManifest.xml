@@ -89,7 +89,7 @@
         <activity android:name="com.example.neurolearning.ui.Story8Activity" android:exported="true" />
         <!-- 키오스크 게임 화면 -->
         <activity android:name="com.example.neurolearning.ui.NameGameActivity" android:exported="true" />
-        
+
 
         <!-- 스토리6상세 / 가위바위보 게임 진입 화면 -->
         <activity android:name="com.example.neurolearning.ui.Story9Activity" android:exported="true" />

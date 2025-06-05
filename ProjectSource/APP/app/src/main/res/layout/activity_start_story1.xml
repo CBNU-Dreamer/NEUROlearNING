@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#FFF9F0"
@@ -7,18 +8,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- NPC 대화창 -->
-    <TextView
-        android:id="@+id/tvNpcDialog"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="@drawable/ic_rounded"
-        android:padding="20dp"
-        android:text="함께 십자말풀이를 해봐요!\n제가 문제를 낼게요!\n준비됐나요?"
-        android:textColor="#000000"
-        android:textSize="20sp" />
+    <!-- [1] NPC 대화창 + 음성 버튼 영역 -->
 
-    <!-- NPC 이미지 -->
+    <!-- [2] NPC 이미지 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- [1-1] NPC 대화창(TextView) -->
+        <TextView
+            android:id="@+id/tvNpcDialog"
+            android:layout_width="350dp"
+            android:layout_height="140dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_rounded"
+            android:padding="20dp"
+            android:text="함께 십자말풀이를 해봐요!\n제가 문제를 낼게요!\n준비됐나요?"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <!-- [1-2] 음성 재생 버튼 -->
+        <ImageButton
+            android:id="@+id/btnPlayNpcDialog"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Play Voice"
+            android:src="@android:drawable/ic_btn_speak_now" />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/ivNpcImage"
         android:layout_width="391dp"
@@ -27,8 +49,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/neighbor1" />
 
-
-    <!-- 게임 시작 버튼 -->
+    <!-- [3] 게임 시작 버튼 -->
     <Button
         android:id="@+id/btnStartGame"
         android:layout_width="match_parent"

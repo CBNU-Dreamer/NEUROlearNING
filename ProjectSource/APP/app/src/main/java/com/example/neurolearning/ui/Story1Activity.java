@@ -2,10 +2,14 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -14,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.neurolearning.R;
 import com.example.neurolearning.data.GameProgressRepository; // 추가
 
-public class Story1Activity extends AppCompatActivity {
+import java.util.Locale;
+
+public class Story1Activity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private static final int REQ_GAME = 100; // 게임 요청 코드 (Story1에 맞는 게임으로 변경 가능)
     private FrameLayout contentFrame;
 
@@ -23,6 +29,11 @@ public class Story1Activity extends AppCompatActivity {
     private String currentUsername;
     private int currentStoryNumber = 1; // Story1Activity이므로 1번 스토리
     private long gameStartTime;
+
+    // TTS 관련
+    private TextToSpeech tts;
+    private TextView tvNpcDialog;          // NPC 대화창 텍스트뷰
+    private ImageButton btnPlayNpcDialog;  // 음성 재생 버튼
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,10 @@ public class Story1Activity extends AppCompatActivity {
         gameProgressRepository = new GameProgressRepository(getApplication());
 
         contentFrame = findViewById(R.id.contentFrame);
+
+        // TTS 초기화
+        tts = new TextToSpeech(this, this);
+
         showInitialScreen();
     }
 
@@ -46,13 +61,25 @@ public class Story1Activity extends AppCompatActivity {
         contentFrame.removeAllViews();
         View initial = LayoutInflater.from(this)
                 .inflate(R.layout.activity_start_story1, contentFrame, false); // Story1 시작 레이아웃
-        Button btn = initial.findViewById(R.id.btnStartGame);
 
+        // NPC 대화창 텍스트뷰 바인딩
+        tvNpcDialog = initial.findViewById(R.id.tvNpcDialog);
+        // 새로 추가된 음성 재생 버튼 바인딩
+        btnPlayNpcDialog = initial.findViewById(R.id.btnPlayNpcDialog);
+
+        // 음성 재생 버튼 클릭 시 TTS를 통해 대화창 텍스트 읽어주기
+        btnPlayNpcDialog.setOnClickListener(v -> {
+            String textToSpeak = tvNpcDialog.getText().toString();
+            speakText(textToSpeak);
+        });
+
+        // 게임 시작 버튼 바인딩
+        Button btn = initial.findViewById(R.id.btnStartGame);
         btn.setOnClickListener(v -> {
             gameStartTime = System.currentTimeMillis(); // 게임 시작 시간 기록 (추가)
 
-            // Story1에 맞는 게임 Activity 호출 (예시: 메모리 게임, 다른 미니게임 등)
-            Intent intent = new Intent(Story1Activity.this, /* Story1Game */CrossWordGameActivity.class);
+            // Story1에 맞는 게임 Activity 호출 (예시: 십자말 풀이)
+            Intent intent = new Intent(Story1Activity.this, CrossWordGameActivity.class);
             // 사용자 정보 전달 (추가)
             intent.putExtra("username", currentUsername);
             intent.putExtra("storyNumber", currentStoryNumber);
@@ -98,5 +125,56 @@ public class Story1Activity extends AppCompatActivity {
 
         btn.setOnClickListener(v -> finish());
         contentFrame.addView(end);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // TextToSpeech.OnInitListener 메서드
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            // 한국어로 설정
+            int result = tts.setLanguage(Locale.KOREAN);
+            // 목소리 톤을 살짝 높여서(1.2f) 여성 음성 느낌을 줌
+            tts.setPitch(1.2f);
+            tts.setSpeechRate(1.0f);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA ||
+                    result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(this, "TTS: 해당 언어를 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "TTS 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 텍스트를 음성으로 읽어주는 헬퍼 메서드
+     */
+    private void speakText(String text) {
+        if (tts != null) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "NPC_DIALOG");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TTS 종료 및 자원 해제
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // 액션바 뒤로가기 처리
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
