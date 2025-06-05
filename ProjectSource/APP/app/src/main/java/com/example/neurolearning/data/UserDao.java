@@ -17,7 +17,7 @@ public interface UserDao {
     @Update
     void updateUser(User user);
 
-    // 🎯 새로운 User.java의 로그인 방식에 맞춤 (이름 + 전화번호)
+    // 새로운 User.java의 로그인 방식에 맞춤 (이름 + 전화번호)
     @Query("SELECT * FROM user_table WHERE name = :name AND phone = :phone LIMIT 1")
     LiveData<User> getUserByNameAndPhone(String name, String phone);
 
@@ -41,7 +41,7 @@ public interface UserDao {
     @Query("SELECT * FROM user_table WHERE user_id = :userId LIMIT 1")
     User getUserByIdSync(String userId);
 
-    // 🎯 게임 진행 상황 업데이트 (User 테이블에서 직접 관리)
+    // 게임 진행 상황 업데이트 (User 테이블에서 직접 관리)
     @Query("UPDATE user_table SET current_story = :currentStory, total_completed_stories = :completedStories WHERE user_id = :userId")
     void updateGameProgress(String userId, int currentStory, int completedStories);
 

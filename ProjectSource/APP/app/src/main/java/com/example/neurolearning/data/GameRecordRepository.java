@@ -20,7 +20,7 @@ public class GameRecordRepository {
         executor = Executors.newFixedThreadPool(2);
     }
 
-    // 🎯 게임 기록 저장 및 사용자 진행 상황 업데이트
+    // 게임 기록 저장 및 사용자 진행 상황 업데이트
     public void saveGameRecord(String userId, String userName, int storyNumber,
                                String gameType, int score, boolean isSuccess,
                                int mistakes, long completionTime) {
@@ -35,7 +35,7 @@ public class GameRecordRepository {
                         isSuccess, System.currentTimeMillis(), mistakes, completionTime
                 );
                 gameRecordDao.insertGameRecord(record);
-                Log.d(TAG, "✅ 게임 기록 저장 완료");
+                Log.d(TAG, "게임 기록 저장 완료");
 
                 // 2. 스토리 완료 시 사용자 진행 상황 업데이트
                 if (isSuccess) {
@@ -51,51 +51,51 @@ public class GameRecordRepository {
                             int newCurrentStory = Math.min(storyNumber + 1, 9); // 최대 9번 스토리
 
                             userRepository.updateGameProgress(userId, newCurrentStory, newCompletedStories);
-                            Log.d(TAG, "✅ 진행 상황 업데이트: 현재 스토리 " + newCurrentStory + ", 완료 " + newCompletedStories);
+                            Log.d(TAG, "진행 상황 업데이트: 현재 스토리 " + newCurrentStory + ", 완료 " + newCompletedStories);
                         } else {
-                            Log.d(TAG, "ℹ️ 이미 완료된 스토리 재플레이 - 진행 상황 업데이트 안함");
+                            Log.d(TAG, "이미 완료된 스토리 재플레이 - 진행 상황 업데이트 안함");
                         }
                     }
                 }
 
                 Log.d(TAG, "=== 게임 기록 저장 완료 ===");
             } catch (Exception e) {
-                Log.e(TAG, "❌ 게임 기록 저장 실패", e);
+                Log.e(TAG, "게임 기록 저장 실패", e);
             }
         });
     }
 
-    // 🎯 특정 사용자의 모든 게임 기록
+    //  특정 사용자의 모든 게임 기록
     public LiveData<List<GamePlayRecord>> getUserGameRecords(String userId) {
         return gameRecordDao.getUserGameRecords(userId);
     }
 
-    // 🎯 특정 스토리의 게임 기록
+    //  특정 스토리의 게임 기록
     public LiveData<List<GamePlayRecord>> getStoryGameRecords(String userId, int storyNumber) {
         return gameRecordDao.getStoryGameRecords(userId, storyNumber);
     }
 
-    // 🎯 최근 게임 기록
+    //  최근 게임 기록
     public LiveData<List<GamePlayRecord>> getRecentGameRecords(String userId) {
         return gameRecordDao.getRecentGameRecords(userId);
     }
 
-    // 🎯 최고 점수 기록
+    //  최고 점수 기록
     public LiveData<GamePlayRecord> getBestGameRecord(String userId, String gameType) {
         return gameRecordDao.getBestGameRecord(userId, gameType);
     }
 
-    // 🎯 전체 플레이 횟수
+    //  전체 플레이 횟수
     public LiveData<Integer> getTotalPlayCount(String userId) {
         return gameRecordDao.getTotalPlayCount(userId);
     }
 
-    // 🎯 특정 스토리 플레이 횟수
+    //  특정 스토리 플레이 횟수
     public LiveData<Integer> getStoryPlayCount(String userId, int storyNumber) {
         return gameRecordDao.getStoryPlayCount(userId, storyNumber);
     }
 
-    // 🎯 리소스 정리
+    //  리소스 정리
     public void shutdown() {
         executor.shutdown();
     }

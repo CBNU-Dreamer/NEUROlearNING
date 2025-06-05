@@ -5,6 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+//====게임 한판당의 기록======
+//자체PK, UUID, 이름,
+
 @Entity(tableName = "game_play_record")
 public class GamePlayRecord {
 
@@ -13,11 +16,11 @@ public class GamePlayRecord {
     public int id;
 
     @NonNull
-    @ColumnInfo(name = "user_id") // 🎯 User의 UUID 참조
+    @ColumnInfo(name = "user_id") // User의 UUID 참조
     public String userId;
 
     @NonNull
-    @ColumnInfo(name = "user_name") // 🎯 검색 편의를 위한 이름 저장
+    @ColumnInfo(name = "user_name") // 검색 편의를 위한 이름 저장
     public String userName;
 
     @ColumnInfo(name = "story_number")
