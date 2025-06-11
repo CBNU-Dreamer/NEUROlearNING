@@ -7,16 +7,48 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- NPC 대화창 -->
-    <TextView
-        android:id="@+id/tvNpcDialog"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="@drawable/ic_rounded"
-        android:padding="20dp"
-        android:text="숫자 기억 게임을 알려주는 NPC 대사"
-        android:textColor="#000000"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <!-- 대화창 -->
+
+            <!-- 음성 버튼: 오른쪽 상단에 배치 -->
+
+            <TextView
+                android:id="@+id/tvNpcDialog"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="142dp"
+                android:background="@drawable/ic_rounded"
+                android:padding="20dp"
+                android:text="숫자 기억 게임을 진행해볼게요!"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/btnPlayNpcDialog"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="15dp"
+                android:backgroundTint="@color/white"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="top|end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play Voice"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_btn_speak_now" />
+        </FrameLayout>
+
+    </LinearLayout>
 
     <!-- 캐릭터 이미지 -->
     <ImageView

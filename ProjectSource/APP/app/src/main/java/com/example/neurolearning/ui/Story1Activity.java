@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,10 +29,19 @@ public class Story1Activity extends AppCompatActivity {
     private int currentStoryNumber = 1;
     private long gameStartTime;
 
+    // 뷰
+    private TextView tvNpcDialog;
+    private ImageButton btnPlayNpcDialog;
+
+    // TTS 헬퍼
+    private TtsHelper ttsHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story1);
+
+        ttsHelper = TtsHelper.getInstance(this);
 
         // 사용자 정보 가져오기
         currentUserId = getIntent().getStringExtra("userId");
@@ -56,6 +67,15 @@ public class Story1Activity extends AppCompatActivity {
         View initial = LayoutInflater.from(this)
                 .inflate(R.layout.activity_start_story1, contentFrame, false); // 레이아웃 재사용
         Button btn = initial.findViewById(R.id.btnStartGame);
+
+        // 뷰 바인딩
+        tvNpcDialog = initial.findViewById(R.id.tvNpcDialog);
+        btnPlayNpcDialog = initial.findViewById(R.id.btnPlayNpcDialog);
+
+        // 재생 버튼 클릭 → TtsHelper 호출
+        btnPlayNpcDialog.setOnClickListener(v ->
+                ttsHelper.speak(tvNpcDialog.getText().toString())
+        );
 
         btn.setOnClickListener(v -> {
             gameStartTime = System.currentTimeMillis();
@@ -106,6 +126,15 @@ public class Story1Activity extends AppCompatActivity {
         View end = LayoutInflater.from(this)
                 .inflate(R.layout.activity_end_story1, contentFrame, false); // 레이아웃 재사용
         Button btn = end.findViewById(R.id.btnEnd);
+
+        // 뷰 바인딩
+        tvNpcDialog = end.findViewById(R.id.tvNpcDialog);
+        btnPlayNpcDialog = end.findViewById(R.id.btnPlayNpcDialog);
+
+        // 재생 버튼 클릭 → TtsHelper 호출
+        btnPlayNpcDialog.setOnClickListener(v ->
+                ttsHelper.speak(tvNpcDialog.getText().toString())
+        );
 
         btn.setOnClickListener(v -> {
             Log.d(TAG, "Story1 완료 - StoryActivity로 복귀");

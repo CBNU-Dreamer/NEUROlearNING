@@ -21,8 +21,8 @@ import java.util.Random;
 
 public class DirectionGameActivity extends AppCompatActivity {
     private static final String TAG = "DirectionGameActivity";
-    private static final int SEQUENCE_LENGTH = 7;
-    private static final long DISPLAY_INTERVAL_MS = 1000; // 각 화살표 당 1초 간격
+    private static final int SEQUENCE_LENGTH = 4;
+    private static final long DISPLAY_INTERVAL_MS = 3000; // 각 화살표 당 3초 간격
 
     private TextView tvGameTitle;
     private TextView tvInstruction;

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,10 +29,17 @@ public class Story6Activity extends AppCompatActivity {
     private int currentStoryNumber = 6;
     private long gameStartTime;
 
+    private TextView tvNpcDialog;
+    private ImageButton btnPlayNpcDialog;
+    // TTS 헬퍼
+    private TtsHelper ttsHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story6);
+
+        ttsHelper = TtsHelper.getInstance(this);
 
         // 사용자 정보 가져오기
         currentUserId = getIntent().getStringExtra("userId");
@@ -60,6 +69,16 @@ public class Story6Activity extends AppCompatActivity {
                 .inflate(R.layout.activity_start_story6, contentFrame, false); // 레이아웃 재사용
 
         Button btnStartGame = startView.findViewById(R.id.btnStartGame);
+
+        // 뷰 바인딩
+        tvNpcDialog = startView.findViewById(R.id.tvNpcDialog);
+        btnPlayNpcDialog = startView.findViewById(R.id.btnPlayNpcDialog);
+
+        // 재생 버튼 클릭 → TtsHelper 호출
+        btnPlayNpcDialog.setOnClickListener(v ->
+                ttsHelper.speak(tvNpcDialog.getText().toString())
+        );
+
         btnStartGame.setOnClickListener(v -> {
             gameStartTime = System.currentTimeMillis();
 
@@ -116,6 +135,15 @@ public class Story6Activity extends AppCompatActivity {
                 .inflate(R.layout.activity_end_story6, contentFrame, false); // 레이아웃 재사용
 
         Button btnEnd = endView.findViewById(R.id.btnEnd);
+
+        tvNpcDialog = endView.findViewById(R.id.tvNpcDialog);
+        btnPlayNpcDialog = endView.findViewById(R.id.btnPlayNpcDialog);
+
+        // 재생 버튼 클릭 → TtsHelper 호출
+        btnPlayNpcDialog.setOnClickListener(v ->
+                ttsHelper.speak(tvNpcDialog.getText().toString())
+        );
+
         btnEnd.setOnClickListener(v -> {
             Log.d(TAG, "Story6 완료 - StoryActivity로 복귀");
             finish();
