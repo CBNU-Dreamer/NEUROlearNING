@@ -25,12 +25,12 @@ public class NameGameActivity extends AppCompatActivity {
             "정새연", "카구야", "배수연", "야마다", "에렌", "배새연"
     };
     private final int[] neighborDrawables = {
-            R.drawable.neighbor1,
-            R.drawable.neighbor2,
-            R.drawable.neighbor3,
-            R.drawable.neighbor4,
-            R.drawable.neighbor5,
-            R.drawable.neighbor6
+            R.drawable.neigh1,
+            R.drawable.neigh2,
+            R.drawable.neigh3,
+            R.drawable.neigh4,
+            R.drawable.neigh5,
+            R.drawable.neigh6
     };
 
     // 레이아웃1 요소

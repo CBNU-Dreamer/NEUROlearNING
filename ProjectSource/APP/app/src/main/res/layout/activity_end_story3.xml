@@ -26,7 +26,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/neighbor2" />
+        android:src="@drawable/neighbor3" />
 
     <!-- 종료 버튼 -->
     <Button

@@ -58,7 +58,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 정새연"
-                        android:src="@drawable/neighbor1" />
+                        android:src="@drawable/neigh1" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 카구야"
-                        android:src="@drawable/neighbor2" />
+                        android:src="@drawable/neigh2" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 배수연"
-                        android:src="@drawable/neighbor3" />
+                        android:src="@drawable/neigh3" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 야마다"
-                        android:src="@drawable/neighbor4" />
+                        android:src="@drawable/neigh4" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 에렌"
-                        android:src="@drawable/neighbor5" />
+                        android:src="@drawable/neigh5" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -204,7 +204,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:contentDescription="이웃 이미지: 배새연"
-                        android:src="@drawable/neighbor6" />
+                        android:src="@drawable/neigh6" />
 
                     <TextView
                         android:layout_width="wrap_content"

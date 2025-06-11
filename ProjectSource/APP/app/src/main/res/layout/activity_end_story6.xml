@@ -27,7 +27,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/neighbor5" />
+        android:src="@drawable/neighbor6" />
 
     <!-- 다음 이동 버튼 -->
     <Button
