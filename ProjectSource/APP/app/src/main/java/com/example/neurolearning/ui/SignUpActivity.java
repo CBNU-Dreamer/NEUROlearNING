@@ -41,12 +41,6 @@ public class SignUpActivity extends AppCompatActivity {
         // 버튼 클릭 이벤트 처리
         buttonCreateAccount.setOnClickListener(v -> createAccount());
 
-        // 테스트 버튼 (로그인 화면으로)
-        Button testButton = findViewById(R.id.button);
-        testButton.setOnClickListener(v -> {
-            Intent testIntent = new Intent(SignUpActivity.this, SignInActivity.class);
-            startActivity(testIntent);
-        });
     }
 
     private void createAccount() {

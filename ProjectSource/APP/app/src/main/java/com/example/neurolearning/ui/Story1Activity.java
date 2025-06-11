@@ -30,7 +30,7 @@ public class Story1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_story2); // story2 레이아웃 재사용
+        setContentView(R.layout.activity_story1);
 
         // 사용자 정보 가져오기
         currentUserId = getIntent().getStringExtra("userId");
@@ -54,7 +54,7 @@ public class Story1Activity extends AppCompatActivity {
     private void showInitialScreen() {
         contentFrame.removeAllViews();
         View initial = LayoutInflater.from(this)
-                .inflate(R.layout.activity_start_story2, contentFrame, false); // 레이아웃 재사용
+                .inflate(R.layout.activity_start_story1, contentFrame, false); // 레이아웃 재사용
         Button btn = initial.findViewById(R.id.btnStartGame);
 
         btn.setOnClickListener(v -> {
@@ -104,7 +104,7 @@ public class Story1Activity extends AppCompatActivity {
     private void showEndScreen() {
         contentFrame.removeAllViews();
         View end = LayoutInflater.from(this)
-                .inflate(R.layout.activity_end_story2, contentFrame, false); // 레이아웃 재사용
+                .inflate(R.layout.activity_end_story1, contentFrame, false); // 레이아웃 재사용
         Button btn = end.findViewById(R.id.btnEnd);
 
         btn.setOnClickListener(v -> {

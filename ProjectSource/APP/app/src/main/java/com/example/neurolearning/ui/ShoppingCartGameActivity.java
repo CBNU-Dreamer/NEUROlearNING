@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCartGameActivity extends AppCompatActivity {
+    private static final String TAG = "ShoppingCartGameActivity";
 
     // ─────────────────────────────────────────────────────────────────
     // [1] 레이아웃 컨테이너(암기, 준비, 퀴즈)
@@ -36,8 +38,8 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
 
     // ─────────────────────────────────────────────────────────────────
     // [3] 준비 화면 뷰
-    private Button btnReadyYes;   // “네, 준비됐어요!”
-    private Button btnReadyMore;  // “아직 더 외울래요!”
+    private Button btnReadyYes;   // "네, 준비됐어요!"
+    private Button btnReadyMore;  // "아직 더 외울래요!"
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
@@ -57,13 +59,14 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
-    // DB/진행 기록 관련
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
+    // 🎯 새로운 DB 구조를 위한 필드들
+    private String currentUserId;
+    private String currentUserName;
     private int currentStoryNumber;
     private long gameStartTime;
     private int totalAttempts = 0;   // 퀴즈 제출 시도 횟수
-    private int correctAttempts = 0; // 정답 맞춘 횟수 (퀴즈는 한 번만 제출하므로 1 또는 0)
+    private int correctAttempts = 0; // 정답 맞춘 횟수
+    private boolean gameCompleted = false;
     // ─────────────────────────────────────────────────────────────────
 
     @Override
@@ -72,15 +75,14 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_cart_game);
 
         // ─────────────────────────────────────────────────────────────
-        // (A) 사용자 정보 및 DB Repository 초기화
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser";
-        }
-        currentStoryNumber = getIntent().getIntExtra("storyNumber", 1);
+        // 🎯 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 6);
 
-        gameProgressRepository = new GameProgressRepository(getApplication());
         gameStartTime = System.currentTimeMillis();
+
+        Log.d(TAG, "장보기 게임 시작: " + currentUserName + " (Story " + currentStoryNumber + ")");
         // ─────────────────────────────────────────────────────────────
 
         // ─────────────────────────────────────────────────────────────
@@ -115,7 +117,8 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         correctList.add("치약");
         correctList.add("샤인머스캣");
         correctList.add("물");
-        // 필요하다면 아이템을 더 추가하거나 동적으로 처리 가능
+
+        Log.d(TAG, "정답 리스트: " + correctList.toString());
         // ─────────────────────────────────────────────────────────────
 
         // ─────────────────────────────────────────────────────────────
@@ -131,12 +134,16 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
 
         // (D) 퀴즈 옵션 토글 버튼 리스너
         View.OnClickListener quizOptionListener = v -> {
+            if (gameCompleted) return;
+
             ToggleButton tb = (ToggleButton) v;
             String item = tb.getText().toString();
             if (tb.isChecked()) {
                 userSelected.add(item);
+                Log.d(TAG, "아이템 선택: " + item);
             } else {
                 userSelected.remove(item);
+                Log.d(TAG, "아이템 선택 해제: " + item);
             }
             updateSelectedItemsText();
         };
@@ -149,7 +156,10 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
 
         // (E) 퀴즈 제출 버튼 리스너
         btnSubmitQuiz.setOnClickListener(v -> {
+            if (gameCompleted) return;
+
             totalAttempts++;
+            Log.d(TAG, "퀴즈 제출 시도 #" + totalAttempts + ", 선택: " + userSelected.toString());
             checkQuizAnswer();
         });
         // ─────────────────────────────────────────────────────────────
@@ -214,6 +224,7 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         userSelected.clear();
         tvSelectedItems.setText("선택된 물건: ");
         tvQuizResult.setText("");
+        gameCompleted = false;
     }
     // ─────────────────────────────────────────────────────────────────
 
@@ -238,6 +249,7 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         if (userSelected.size() != correctList.size()) {
             tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             tvQuizResult.setText("물건 개수가 다릅니다. 다시 확인하세요!");
+            Log.d(TAG, "개수 불일치: 선택 " + userSelected.size() + "개, 정답 " + correctList.size() + "개");
             return;
         }
 
@@ -246,64 +258,69 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         for (int i = 0; i < correctList.size(); i++) {
             if (!correctList.get(i).equals(userSelected.get(i))) {
                 allMatch = false;
+                Log.d(TAG, "순서 " + i + " 불일치: 선택 '" + userSelected.get(i) + "', 정답 '" + correctList.get(i) + "'");
                 break;
             }
         }
 
         if (allMatch) {
             correctAttempts = 1;
+            gameCompleted = true;
+
             tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
             tvQuizResult.setText("정답입니다! 잘했어요 🎉");
-            // 게임 완료 로직 호출 (잠시 후 결과 저장 및 종료)
+
+            Log.d(TAG, "✅ 게임 성공! 시도 횟수: " + totalAttempts);
+
+            // 🎯 게임 완료 로직 호출 (잠시 후 결과 저장 및 종료)
             new Handler().postDelayed(this::completeGame, 1000);
         } else {
             tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             tvQuizResult.setText("다시 한 번 도전해 보세요!");
+            Log.d(TAG, "❌ 오답, 재시도 가능");
         }
     }
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
-    // [F] 게임 완료 처리
+    // [F] 🎯 게임 완료 처리 (새로운 DB 구조 대응)
     private void completeGame() {
         // (1) UI 비활성화
-        tbOpt1.setEnabled(false);
-        tbOpt2.setEnabled(false);
-        tbOpt3.setEnabled(false);
-        tbOpt4.setEnabled(false);
-        tbOpt5.setEnabled(false);
-        tbOpt6.setEnabled(false);
-        btnSubmitQuiz.setEnabled(false);
+        setAllButtonsEnabled(false);
         tvQuizResult.setText("게임 완료! 결과를 저장 중입니다...");
 
         // (2) 점수 계산
-        // 실수 횟수 = 총 시도 횟수 - 정답 맞춘 횟수
-        int mistakes = totalAttempts - correctAttempts;
+        int mistakes = totalAttempts - correctAttempts; // 실수 횟수 = 총 시도 - 성공 횟수
         int baseScore = 100;
-        int finalScore = Math.max(baseScore - (mistakes * 10), 10);
-        // 예: 오답 1번당 10점 감점, 최소 10점 보장
+        int finalScore = Math.max(baseScore - (mistakes * 10), 10); // 실수 1회당 10점 감점, 최소 10점
 
-        long completionTimeSec = (System.currentTimeMillis() - gameStartTime) / 1000;
+        Log.d(TAG, "점수 계산: 기본 " + baseScore + "점, 실수 " + mistakes + "회, 최종 " + finalScore + "점");
 
-        // (3) DB에 게임 기록 저장
-        gameProgressRepository.saveGamePlayRecord(
-                currentUsername,
-                currentStoryNumber,
-                "SHOPPING_CART",   // 게임 타입 식별자
-                finalScore,
-                true,              // 성공 여부 (맞춰서 성공)
-                mistakes,
-                completionTimeSec
-        );
-
-        // (4) 잠시 후 결과를 Story1Activity로 전달하고 종료
+        // (3) 🎯 Story6Activity로 결과 반환 (GameRecordRepository는 Story6Activity에서 처리)
         new Handler().postDelayed(() -> {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("score", finalScore);
-            resultIntent.putExtra("completionTime", completionTimeSec);
+            resultIntent.putExtra("mistakes", mistakes);
+            resultIntent.putExtra("success", true);
+
             setResult(RESULT_OK, resultIntent);
+
+            Log.d(TAG, "게임 결과 반환 완료");
             finish();
         }, 1500);
+    }
+
+    /**
+     * 🎯 모든 버튼 활성화/비활성화
+     */
+    private void setAllButtonsEnabled(boolean enabled) {
+        tbOpt1.setEnabled(enabled);
+        tbOpt2.setEnabled(enabled);
+        tbOpt3.setEnabled(enabled);
+        tbOpt4.setEnabled(enabled);
+        tbOpt5.setEnabled(enabled);
+        tbOpt6.setEnabled(enabled);
+        btnSubmitQuiz.setEnabled(enabled);
     }
     // ─────────────────────────────────────────────────────────────────
 }

@@ -1,7 +1,9 @@
 package com.example.neurolearning.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DirectionGameActivity extends AppCompatActivity {
-
+    private static final String TAG = "DirectionGameActivity";
     private static final int SEQUENCE_LENGTH = 7;
     private static final long DISPLAY_INTERVAL_MS = 1000; // 각 화살표 당 1초 간격
 
@@ -41,6 +43,13 @@ public class DirectionGameActivity extends AppCompatActivity {
     private int displayIndex = 0;
     private boolean acceptingInput = false;
 
+    // 🎯 새로운 DB 구조를 위한 필드들
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber;
+    private int mistakeCount = 0;
+    private boolean gameCompleted = false;
+
     private enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
@@ -49,6 +58,13 @@ public class DirectionGameActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction_game);
+
+        // 🎯 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 4);
+
+        Log.d(TAG, "방향 게임 시작: " + currentUserName + " (Story " + currentStoryNumber + ")");
 
         // 뷰 바인딩
         tvGameTitle = findViewById(R.id.tvGameTitle);
@@ -89,6 +105,7 @@ public class DirectionGameActivity extends AppCompatActivity {
             int idx = rand.nextInt(values.length);
             sequence.add(values[idx]);
         }
+        Log.d(TAG, "생성된 시퀀스 길이: " + sequence.size());
     }
 
     /**
@@ -125,7 +142,11 @@ public class DirectionGameActivity extends AppCompatActivity {
      * 3) 사용자 버튼 입력을 처리
      */
     private void handleUserInput(Direction dir) {
-        if (!acceptingInput) return;
+        if (!acceptingInput || gameCompleted) return;
+
+        // 현재 입력 위치에서 정답 확인
+        int currentIndex = userInput.size();
+        Direction correctDirection = sequence.get(currentIndex);
 
         // 시각적으로 layoutUserInput에 작은 ImageView 추가
         ImageView iv = new ImageView(this);
@@ -133,8 +154,19 @@ public class DirectionGameActivity extends AppCompatActivity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
         params.setMargins(8, 0, 8, 0);
         iv.setLayoutParams(params);
-        layoutUserInput.addView(iv);
 
+        // 🎯 정답/오답에 따른 시각적 피드백
+        if (dir == correctDirection) {
+            // 정답: 초록색 테두리 또는 기본 색상
+            iv.setBackgroundResource(android.R.color.transparent);
+        } else {
+            // 오답: 빨간색 테두리
+            iv.setBackgroundResource(android.R.color.holo_red_light);
+            mistakeCount++;
+            Log.d(TAG, "실수 발생! 현재 실수 횟수: " + mistakeCount);
+        }
+
+        layoutUserInput.addView(iv);
         userInput.add(dir);
 
         if (userInput.size() == sequence.size()) {
@@ -157,13 +189,63 @@ public class DirectionGameActivity extends AppCompatActivity {
             }
         }
 
+        gameCompleted = true;
+
         if (allMatch) {
             tvFeedback.setText("정답입니다! 잘했어요 🐶");
+            tvNpcTalk.setText("와! 정말 잘했네요!");
+
+            // 🎯 게임 성공 - 결과 반환
+            finishGameWithResult(true, calculateScore());
+
         } else {
             tvFeedback.setText("아쉽네요… 다시 도전해보세요!");
-        }
+            tvNpcTalk.setText("조금 아쉽지만 괜찮아요!");
 
-        // (필요시) 몇 초 뒤 재시작하거나 종료할 수 있도록 후속 로직 추가 가능
+            // 🎯 재시작 기회 제공 또는 실패로 처리
+            handler.postDelayed(() -> {
+                restartGame();
+            }, 2000);
+        }
+    }
+
+    /**
+     * 🎯 점수 계산 (완벽한 경우 100점, 실수할 때마다 감점)
+     */
+    private int calculateScore() {
+        int baseScore = 100;
+        int penalty = mistakeCount * 10; // 실수 1회당 10점 감점
+        return Math.max(0, baseScore - penalty);
+    }
+
+    /**
+     * 🎯 게임 재시작
+     */
+    private void restartGame() {
+        mistakeCount = 0;
+        gameCompleted = false;
+        userInput.clear();
+        layoutUserInput.removeAllViews();
+
+        generateRandomSequence();
+        showSequence();
+    }
+
+    /**
+     * 🎯 게임 완료 - 결과를 Story4Activity로 반환
+     */
+    private void finishGameWithResult(boolean success, int score) {
+        Log.d(TAG, "게임 완료 - 성공: " + success + ", 점수: " + score + ", 실수: " + mistakeCount);
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("score", score);
+        resultIntent.putExtra("mistakes", mistakeCount);
+        resultIntent.putExtra("success", success);
+
+        setResult(success ? RESULT_OK : RESULT_CANCELED, resultIntent);
+
+        // 2초 후 종료 (사용자가 결과를 볼 수 있도록)
+        handler.postDelayed(() -> finish(), 2000);
     }
 
     /**

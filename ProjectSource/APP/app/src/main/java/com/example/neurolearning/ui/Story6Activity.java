@@ -2,6 +2,7 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,54 +13,64 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameRecordRepository;
 
 public class Story6Activity extends AppCompatActivity {
-    private static final int REQ_SHOPPING_GAME = 206; // 스토리6용 요청 코드
+    private static final String TAG = "Story6Activity";
+    private static final int REQ_SHOPPING_GAME = 100;
 
     private FrameLayout contentFrame;
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
-    private final int currentStoryNumber = 6; // Story6Activity 이므로 6
+    private GameRecordRepository gameRecordRepository;
+
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber = 6;
     private long gameStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story6);
-        // → activity_story6.xml 에 FrameLayout(contentFrame) 하나만 정의
 
-        // 인텐트로부터 username 받기 (없으면 기본값 사용)
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser";
+        // 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Repository 초기화 (DB 저장용)
-        gameProgressRepository = new GameProgressRepository(getApplication());
+        Log.d(TAG, "Story6Activity 시작: " + currentUserName);
+
+        // Repository 초기화
+        gameRecordRepository = new GameRecordRepository(getApplication());
 
         contentFrame = findViewById(R.id.contentFrame);
         showStartScreen();
     }
 
     /**
-     * [1] 스토리6 “시작 화면” (activity_start_story6.xml) 표시
+     * [1] 스토리6 "시작 화면" 표시
      */
     private void showStartScreen() {
         contentFrame.removeAllViews();
         View startView = LayoutInflater.from(this)
-                .inflate(R.layout.activity_start_story6, contentFrame, false);
+                .inflate(R.layout.activity_start_story6, contentFrame, false); // 레이아웃 재사용
 
         Button btnStartGame = startView.findViewById(R.id.btnStartGame);
         btnStartGame.setOnClickListener(v -> {
-            // 게임 시작 시간 기록
             gameStartTime = System.currentTimeMillis();
 
-            // ShoppingCartGameActivity 호출 (스토리 번호는 6)
+            // Story6에 맞는 게임 (장보기 게임) 시작
             Intent intent = new Intent(Story6Activity.this, ShoppingCartGameActivity.class);
-            intent.putExtra("username", currentUsername);
+            intent.putExtra("userId", currentUserId);
+            intent.putExtra("userName", currentUserName);
             intent.putExtra("storyNumber", currentStoryNumber);
             startActivityForResult(intent, REQ_SHOPPING_GAME);
         });
+
         contentFrame.addView(startView);
     }
 
@@ -69,41 +80,47 @@ public class Story6Activity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_SHOPPING_GAME) {
-            if (resultCode == RESULT_OK && data != null) {
-                // 게임에서 반환된 점수와 시간
-                int score = data.getIntExtra("score", 0);
-                long completionTime = data.getLongExtra("completionTime", 0);
 
-                // [A] 게임 기록은 ShoppingCartGameActivity에서 이미 저장했으므로,
-                //     추가 로직이 필요하다면 여기서 수행 가능
+        if (requestCode == REQ_SHOPPING_GAME && resultCode == RESULT_OK) {
+            // 게임 성공 시 DB 업데이트
+            long completionTime = System.currentTimeMillis() - gameStartTime;
+            int score = data != null ? data.getIntExtra("score", 100) : 100;
+            int mistakes = data != null ? data.getIntExtra("mistakes", 0) : 0;
 
-                // [B] 스토리6 완료 처리 (다음 스토리 잠금 해제 등)
-                gameProgressRepository.completeStory(currentUsername, currentStoryNumber);
+            Log.d(TAG, "✅ Story6 장보기 게임 완료 - 점수: " + score + ", 소요시간: " + (completionTime/1000) + "초");
 
-                // [C] “종료 화면” 표시
-                showEndScreen();
-            } else {
-                // 게임이 비정상 종료된 경우
-                Toast.makeText(this, "게임이 정상적으로 종료되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                showStartScreen(); // 원한다면 다시 시작 화면으로 돌아감
-            }
+            // 🎯 새로운 DB 구조에 맞는 게임 기록 저장
+            gameRecordRepository.saveGameRecord(
+                    currentUserId,
+                    currentUserName,
+                    currentStoryNumber,
+                    "SHOPPING_CART",
+                    score,
+                    true, // 성공
+                    mistakes,
+                    completionTime / 1000 // 초 단위
+            );
+
+            showEndScreen();
+        } else if (requestCode == REQ_SHOPPING_GAME) {
+            Toast.makeText(this, "게임이 정상 종료되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * [3] 스토리6 “종료 화면” (activity_end_story6.xml) 표시
+     * [3] 스토리6 "종료 화면" 표시
      */
     private void showEndScreen() {
         contentFrame.removeAllViews();
         View endView = LayoutInflater.from(this)
-                .inflate(R.layout.activity_end_story6, contentFrame, false);
+                .inflate(R.layout.activity_end_story6, contentFrame, false); // 레이아웃 재사용
 
         Button btnEnd = endView.findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(v -> {
-            // Story6Activity 종료 (이후 부모 Activity가 있으면 해당 화면으로 돌아갑니다)
+            Log.d(TAG, "Story6 완료 - StoryActivity로 복귀");
             finish();
         });
+
         contentFrame.addView(endView);
     }
 }
