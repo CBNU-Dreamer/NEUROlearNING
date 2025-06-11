@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository; // 추가
 
 public class Story7Activity extends AppCompatActivity {
     private static final int REQ_GAME = 100; // Story3에 맞는 게임 요청 코드

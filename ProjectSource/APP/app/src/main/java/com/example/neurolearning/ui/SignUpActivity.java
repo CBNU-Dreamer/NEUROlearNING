@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.User;
 import com.example.neurolearning.viewmodel.SignUpViewModel;
 
 public class SignUpActivity extends AppCompatActivity {

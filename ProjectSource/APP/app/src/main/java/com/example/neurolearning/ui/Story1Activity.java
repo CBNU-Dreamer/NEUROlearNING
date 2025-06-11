@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository; // 추가
 
 import java.util.Locale;
 

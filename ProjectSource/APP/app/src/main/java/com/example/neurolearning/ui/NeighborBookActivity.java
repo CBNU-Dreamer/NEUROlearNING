@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;

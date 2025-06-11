@@ -5,9 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.example.neurolearning.data.User;
-import com.example.neurolearning.data.UserRepository;
-
 public class SignUpViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
 

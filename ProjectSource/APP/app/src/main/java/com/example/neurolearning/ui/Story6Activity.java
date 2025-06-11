@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository;
 
 public class Story6Activity extends AppCompatActivity {
     private static final int REQ_SHOPPING_GAME = 206; // 스토리6용 요청 코드

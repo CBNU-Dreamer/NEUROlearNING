@@ -15,8 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository;
-import com.example.neurolearning.data.UserGameStatus;
 
 import java.util.ArrayList;
 import java.util.List;

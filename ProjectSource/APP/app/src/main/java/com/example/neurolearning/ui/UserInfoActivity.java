@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.User;
 import com.example.neurolearning.viewmodel.UserViewModel;
 
 public class UserInfoActivity extends AppCompatActivity {
