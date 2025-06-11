@@ -2,6 +2,7 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,30 +13,39 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.GameRecordRepository;
 
 public class Story3Activity extends AppCompatActivity {
-    private static final int REQ_GAME = 100; // Story3에 맞는 게임 요청 코드
-    private FrameLayout contentFrame;
+    private static final String TAG = "Story3Activity";
+    private static final int REQ_GAME = 100;
 
-    // DB 관련 추가
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
-    private int currentStoryNumber = 3; // Story3Activity이므로 3번 스토리
+    private FrameLayout contentFrame;
+    private GameRecordRepository gameRecordRepository;
+
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber = 3;
     private long gameStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_story3); // Story3 레이아웃
+        setContentView(R.layout.activity_story2); // story2 레이아웃 재사용
 
-        // 사용자 정보 가져오기 (추가)
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser"; // 임시값
+        // 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Repository 초기화 (추가)
-        gameProgressRepository = new GameProgressRepository(getApplication());
+        Log.d(TAG, "Story3Activity 시작: " + currentUserName);
+
+        // Repository 초기화
+        gameRecordRepository = new GameRecordRepository(getApplication());
 
         contentFrame = findViewById(R.id.contentFrame);
         showInitialScreen();
@@ -44,16 +54,16 @@ public class Story3Activity extends AppCompatActivity {
     private void showInitialScreen() {
         contentFrame.removeAllViews();
         View initial = LayoutInflater.from(this)
-                .inflate(R.layout.activity_start_story3, contentFrame, false); // Story3 시작 레이아웃
+                .inflate(R.layout.activity_start_story2, contentFrame, false); // 레이아웃 재사용
         Button btn = initial.findViewById(R.id.btnStartGame);
 
         btn.setOnClickListener(v -> {
-            gameStartTime = System.currentTimeMillis(); // 게임 시작 시간 기록 (추가)
+            gameStartTime = System.currentTimeMillis();
 
-            // Story3에 맞는 게임 Activity 호출 (예시: 퍼즐 게임, 다른 미니게임 등)
-            Intent intent = new Intent(Story3Activity.this, /* Story3Game */RspGameActivity.class);
-            // 사용자 정보 전달 (추가)
-            intent.putExtra("username", currentUsername);
+            // Story3에 맞는 게임 (가위바위보) 시작
+            Intent intent = new Intent(Story3Activity.this, RspGameActivity.class);
+            intent.putExtra("userId", currentUserId);
+            intent.putExtra("userName", currentUserName);
             intent.putExtra("storyNumber", currentStoryNumber);
             startActivityForResult(intent, REQ_GAME);
         });
@@ -64,24 +74,25 @@ public class Story3Activity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQ_GAME && resultCode == RESULT_OK) {
-            // 게임 성공 시 DB 업데이트 (추가 부분)
+            // 게임 성공 시 DB 업데이트
             long completionTime = System.currentTimeMillis() - gameStartTime;
-            int score = data != null ? data.getIntExtra("score", 100) : 100; // 기본 점수
+            int score = data != null ? data.getIntExtra("score", 100) : 100;
 
-            // 1. 게임 플레이 기록 저장
-            gameProgressRepository.saveGamePlayRecord(
-                    currentUsername,
+            Log.d(TAG, "✅ Story3 가위바위보 게임 완료 - 점수: " + score + ", 소요시간: " + (completionTime/1000) + "초");
+
+            // 🎯 새로운 DB 구조에 맞는 게임 기록 저장
+            gameRecordRepository.saveGameRecord(
+                    currentUserId,
+                    currentUserName,
                     currentStoryNumber,
-                    "STORY3_GAME", // Story3에 맞는 게임 타입으로 변경
+                    "ROCK_PAPER_SCISSORS",
                     score,
-                    true,
-                    0,
-                    completionTime / 1000 // 초 단위로 변환
+                    true, // 성공
+                    0, // 가위바위보는 실수 횟수 측정 안함
+                    completionTime / 1000 // 초 단위
             );
-
-            // 2. 스토리 완료 처리 (다음 스토리 해제)
-            gameProgressRepository.completeStory(currentUsername, currentStoryNumber);
 
             showEndScreen();
         } else if (requestCode == REQ_GAME) {
@@ -92,10 +103,14 @@ public class Story3Activity extends AppCompatActivity {
     private void showEndScreen() {
         contentFrame.removeAllViews();
         View end = LayoutInflater.from(this)
-                .inflate(R.layout.activity_end_story3, contentFrame, false); // Story3 종료 레이아웃
+                .inflate(R.layout.activity_end_story2, contentFrame, false); // 레이아웃 재사용
         Button btn = end.findViewById(R.id.btnEnd);
 
-        btn.setOnClickListener(v -> finish());
+        btn.setOnClickListener(v -> {
+            Log.d(TAG, "Story3 완료 - StoryActivity로 복귀");
+            finish();
+        });
+
         contentFrame.addView(end);
     }
 }

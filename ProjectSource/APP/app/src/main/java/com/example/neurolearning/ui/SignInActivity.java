@@ -2,26 +2,26 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.activity.OnBackPressedCallback;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.viewmodel.UserViewModel;
+import com.example.neurolearning.data.User;
+import com.example.neurolearning.data.UserRepository;
 
 public class SignInActivity extends AppCompatActivity {
+    private static final String TAG = "SignInActivity";
 
-    private UserViewModel userViewModel;
+    private UserRepository userRepository;
 
-    private EditText editTextId;
-    private EditText editTextPw;
+    private EditText editTextName;
+    private EditText editTextPhone;
     private Button btnLogin;
     private TextView txtFindPw;
 
@@ -30,8 +30,8 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
-        // ViewModel 초기화
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        // Repository 초기화
+        userRepository = new UserRepository(getApplication());
 
         // UI 요소 연결
         initViews();
@@ -44,8 +44,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        editTextId = findViewById(R.id.editTextId);
-        editTextPw = findViewById(R.id.editTextPw);
+        editTextName = findViewById(R.id.editTextName);
+        editTextPhone = findViewById(R.id.editTextPhone);
         btnLogin = findViewById(R.id.btnLogin);
         txtFindPw = findViewById(R.id.txtFindPw);
     }
@@ -54,61 +54,67 @@ public class SignInActivity extends AppCompatActivity {
         // 로그인 버튼 클릭 이벤트
         btnLogin.setOnClickListener(v -> performLogin());
 
-        // 비밀번호 찾기 텍스트 클릭 이벤트 (선택사항)
+        // 회원가입 텍스트 클릭 이벤트
         txtFindPw.setOnClickListener(v -> {
-            Toast.makeText(this, "비밀번호 찾기 기능은 준비 중입니다.", Toast.LENGTH_SHORT).show();
-            // TODO: 비밀번호 찾기 기능 구현 시 해당 Activity로 이동
+            Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
     private void performLogin() {
-        String username = editTextId.getText().toString().trim();
-        String password = editTextPw.getText().toString().trim();
+        String name = editTextName.getText().toString().trim();
+        String phone = editTextPhone.getText().toString().trim();
 
         // 입력값 유효성 검사
-        if (username.isEmpty()) {
-            editTextId.setError("아이디를 입력해주세요.");
-            editTextId.requestFocus();
+        if (name.isEmpty()) {
+            editTextName.setError("이름을 입력해주세요.");
+            editTextName.requestFocus();
             return;
         }
 
-        if (password.isEmpty()) {
-            editTextPw.setError("비밀번호를 입력해주세요.");
-            editTextPw.requestFocus();
+        if (phone.isEmpty()) {
+            editTextPhone.setError("연락처를 입력해주세요.");
+            editTextPhone.requestFocus();
             return;
         }
 
-        // DB에서 사용자 정보 조회
-        userViewModel.getUserByUsername(username).observe(this, user -> {
-            if (user != null) {
-                // 사용자가 존재하는 경우 비밀번호 확인
-                if (user.password.equals(password)) {
-                    // 로그인 성공
-                    Toast.makeText(this, user.name + "님, 환영합니다!", Toast.LENGTH_SHORT).show();
+        // 🎯 새로운 로그인 방식 (이름 + 전화번호)
+        new Thread(() -> {
+            try {
+                Log.d(TAG, "로그인 시도: " + name + ", " + phone);
+                User user = userRepository.loginUser(name, phone);
 
-                    // 메인 화면 또는 스토리 화면으로 이동
-                    Intent intent = new Intent(SignInActivity.this, StoryActivity.class);
-                    // 사용자 정보를 다음 Activity로 전달 (필요한 경우)
-                    intent.putExtra("username", user.username);
-                    intent.putExtra("name", user.name);
-                    startActivity(intent);
-                    finish(); // 로그인 화면 종료
-                } else {
-                    // 비밀번호 불일치
-                    Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    editTextPw.setError("비밀번호를 다시 확인해주세요.");
-                    editTextPw.requestFocus();
-                }
-            } else {
-                // 사용자가 존재하지 않는 경우
-                Toast.makeText(this, "존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show();
-                editTextId.setError("아이디를 다시 확인해주세요.");
-                editTextId.requestFocus();
+                runOnUiThread(() -> {
+                    if (user != null) {
+                        // 로그인 성공
+                        Log.d(TAG, "✅ 로그인 성공: " + user.getName() + " (UUID: " + user.getUserId() + ")");
+                        Toast.makeText(this, user.getName() + "님, 환영합니다!", Toast.LENGTH_SHORT).show();
+
+                        // StoryActivity로 이동 (사용자 ID 전달)
+                        Intent intent = new Intent(SignInActivity.this, StoryActivity.class);
+                        intent.putExtra("userId", user.getUserId()); // UUID 전달
+                        intent.putExtra("userName", user.getName());  // 이름도 전달
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // 로그인 실패
+                        Log.d(TAG, "❌ 로그인 실패: 사용자를 찾을 수 없음");
+                        Toast.makeText(this, "등록되지 않은 사용자입니다.\n이름과 연락처를 다시 확인해주세요.", Toast.LENGTH_LONG).show();
+                        editTextName.setError("등록되지 않은 사용자입니다");
+                        editTextPhone.setError("등록되지 않은 사용자입니다");
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "❌ 로그인 처리 중 오류", e);
+                runOnUiThread(() ->
+                        Toast.makeText(this, "로그인 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                );
             }
-        });
+        }).start();
     }
 
-    // 뒤로가기 버튼 처리 (새로운 방식)
+    // 뒤로가기 버튼 처리
     private void setupBackPressedCallback() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -120,5 +126,4 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
-
 }

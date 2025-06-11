@@ -9,11 +9,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
+import com.example.neurolearning.data.User;
+import com.example.neurolearning.data.UserRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -22,8 +25,9 @@ import java.util.List;
 public class NeighborBookActivity extends AppCompatActivity {
     private static final String TAG = "NeighborBookActivity";
 
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
+    private UserRepository userRepository;
+    private String currentUserId;
+    private String currentUserName;
     private int unlockedStoryCount = 1; // 기본값 1개
 
     // 데이터 모델
@@ -44,66 +48,56 @@ public class NeighborBookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_neighborbook);
 
         // 사용자 정보 가져오기
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser";
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
-        Log.d(TAG, "NeighborBookActivity 시작: " + currentUsername);
+
+        Log.d(TAG, "NeighborBookActivity 시작: " + currentUserName);
 
         // Repository 초기화
-        gameProgressRepository = new GameProgressRepository(getApplication());
+        userRepository = new UserRepository(getApplication());
 
         // 툴바 설정
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 🎯 사용자 게임 진행상황 관찰 및 UI 업데이트
-        observeUserGameStatus();
+        // 사용자 게임 진행상황 로드
+        loadUserGameStatus();
     }
 
-    private void observeUserGameStatus() {
-        gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
-            Log.d("NeighborBookActivity", "LiveData 콜백: " + (userGameStatus != null ? "데이터 있음" : "null"));
+    private void loadUserGameStatus() {
+        new Thread(() -> {
+            try {
+                User currentUser = userRepository.getUserById(currentUserId);
 
-            if (userGameStatus != null) {
-                // 정상 케이스
-                unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
-                Log.d("NeighborBookActivity", "해제된 스토리: " + unlockedStoryCount + "개");
-                setupNeighborList();
-            } else {
-                Log.d("NeighborBookActivity", "데이터 null - 2.5초 후 재확인...");
-
-                new android.os.Handler().postDelayed(() -> {
-                    gameProgressRepository.getUserGameStatus(currentUsername).observe(this, retryStatus -> {
-                        if (retryStatus != null) {
-                            unlockedStoryCount = retryStatus.totalCompletedStories + 1;
-                            Log.d("NeighborBookActivity", "재확인 성공: " + unlockedStoryCount + "개 해제");
-                        } else {
-                            Log.d("NeighborBookActivity", "신규 사용자 - 초기화 실행");
-                            gameProgressRepository.initializeUserGameStatus(currentUsername);
-                            unlockedStoryCount = 1;
-                        }
+                runOnUiThread(() -> {
+                    if (currentUser != null) {
+                        // 🎯 해제된 스토리 수 = 완료된 스토리 + 1 (현재 진행 가능한 스토리)
+                        unlockedStoryCount = currentUser.getTotalCompletedStories() + 1;
+                        Log.d(TAG, "✅ 사용자 정보 로드 성공");
+                        Log.d(TAG, "완료된 스토리: " + currentUser.getTotalCompletedStories());
+                        Log.d(TAG, "해제된 스토리: " + unlockedStoryCount + "개");
                         setupNeighborList();
-                    });
-                }, 2500); // 🎯 2.5초
+                    } else {
+                        Log.e(TAG, "❌ 사용자 정보 없음 - 기본값 사용");
+                        unlockedStoryCount = 1;
+                        setupNeighborList();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "❌ 사용자 게임 상태 로드 실패", e);
+                runOnUiThread(() -> {
+                    unlockedStoryCount = 1;
+                    setupNeighborList();
+                });
             }
-        });
-    }
-
-    // 🎯 초기화 후 재확인 메서드
-    private void recheckUserGameStatus() {
-        gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
-            if (userGameStatus != null) {
-                unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
-                Log.d(TAG, "🔄 재확인 성공: 해제된 스토리 " + unlockedStoryCount + "개");
-                setupNeighborList();
-            } else {
-                Log.w(TAG, "⚠️ 재확인에도 사용자 상태 없음 - 기본값 사용");
-                unlockedStoryCount = 1;
-                setupNeighborList();
-            }
-        });
+        }).start();
     }
 
     private void setupNeighborList() {
@@ -156,9 +150,10 @@ public class NeighborBookActivity extends AppCompatActivity {
                 play.setOnClickListener(v -> {
                     Log.d(TAG, "스토리 " + storyNumber + " 클릭");
                     Intent intent = new Intent(this, StoryActivity.class);
-                    intent.putExtra("storyNumber", storyNumber);
-                    intent.putExtra("username", currentUsername);
+                    intent.putExtra("userId", currentUserId);
+                    intent.putExtra("userName", currentUserName);
                     startActivity(intent);
+                    finish(); // NeighborBookActivity 종료하고 StoryActivity로 이동
                 });
             } else {
                 // 🔒 LOCKED - 잠긴 스토리

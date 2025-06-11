@@ -12,188 +12,103 @@
 
     <!-- 부제목 -->
 
+    <!-- 아이디 -->
+
+    <!-- 비밀번호 -->
+
+    <!-- 이름 -->
+
+    <!-- 생년월일: 연, 월, 일 -->
+
+    <!-- 음력 체크박스 -->
+
+    <!-- 연락처 -->
+
+    <!-- 보호자 연락처 -->
+
+    <!-- 주소 -->
+
+    <!-- 질병 정보 -->
+
+    <!-- 계정 생성 버튼 -->
+
     <TextView
         android:id="@+id/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_width="345dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="156dp"
+        android:fontFamily="sans-serif-condensed-medium"
         android:text="마을에 입주하세요 :)"
-        android:textSize="24sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 아이디 -->
     <TextView
         android:id="@+id/textSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-medium"
         android:text="계정을 생성해주세요!"
-        android:textSize="18sp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextId"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
-        android:hint="아이디를 입력해주세요!"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textSubtitle" />
-
-    <!-- 비밀번호 -->
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        android:hint="비밀번호를 입력해주세요!"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextId" />
-
-    <!-- 이름 -->
-    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editTextName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="345dp"
+        android:layout_height="63dp"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
+        android:background="#ffffff"
+        android:fontFamily="sans-serif-condensed-medium"
         android:hint="이름을 입력해주세요!"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+        tools:layout_editor_absoluteY="284dp" />
 
-    <!-- 생년월일: 연, 월, 일 -->
-    <LinearLayout
-        android:id="@+id/birthdayLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextName">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextBirthYear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="연도" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextBirthMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="월" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextBirthDay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="일" />
-    </LinearLayout>
-
-    <!-- 음력 체크박스 -->
-    <CheckBox
-        android:id="@+id/checkBoxLunar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="음력입니다."
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/birthdayLayout" />
-
-    <!-- 연락처 -->
     <EditText
         android:id="@+id/editTextUserPhone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="345dp"
+        android:layout_height="60dp"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
+        android:background="#ffffff"
+        android:fontFamily="sans-serif-condensed-medium"
         android:hint="연락처를 입력해주세요!"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkBoxLunar" />
+        tools:layout_editor_absoluteY="362dp" />
 
-    <!-- 보호자 연락처 -->
-    <EditText
-        android:id="@+id/editTextGuardianPhone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="8dp"
-        android:hint="(선택) 보호자의 연락처를 입력해주세요!"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextUserPhone" />
-
-    <!-- 주소 -->
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextAddress"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        android:hint="주소를 입력해주세요!"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextGuardianPhone" />
-
-    <!-- 질병 정보 -->
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextDisease"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="8dp"
-        android:hint="(선택) 질병 정보를 입력해주세요!"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextAddress" />
-
-    <!-- 계정 생성 버튼 -->
     <Button
         android:id="@+id/buttonCreateAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
         android:backgroundTint="#F57C00"
         android:text="계정 생성하기"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextDisease"
-        app:strokeWidth="1dp" />
+        app:strokeWidth="1dp"
+        tools:layout_editor_absoluteY="579dp" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="90dp"
-        android:layout_height="55dp"
+        android:layout_width="62dp"
+        android:layout_height="46dp"
         android:layout_marginStart="29dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="23dp"
-        android:layout_marginBottom="26dp"
+        android:background="#FF8F00"
+        android:backgroundTint="#FF8F00"
         android:text="테스트용"
-        app:layout_constraintBottom_toTopOf="@+id/editTextId"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/textTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
