@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="#FFF9F0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_pink_button"
+                android:background="#FFD1A2"
                 android:text="흥 공부나 해"
                 android:textSize="18sp"
                 android:textColor="#000000"/>
@@ -54,10 +54,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_pink_button"
+                android:background="#FFD1A2"
                 android:text="흥 귀찮아"
-                android:textSize="18sp"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <!-- 3) 고마워 사랑해 -->
             <Button
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_pink_button"
+                android:background="#FFD1A2"
                 android:text="고마워 사랑해"
                 android:textSize="18sp"
                 android:textColor="#000000"/>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FFFFFF"
+    android:background="#FFF9F0"
     android:gravity="center_horizontal">
 
     <!-- 타이틀 -->
