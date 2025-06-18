@@ -63,6 +63,7 @@ public class KioskGameActivity extends AppCompatActivity {
     private void showStep1() {
         tvTitle.setText("키오스크를 사용해봐요!");
         tvSubtitle.setText("1. 화면을 클릭하세요.");
+        tvSubtitle.setTextSize(30);
         contentFrame.removeAllViews();
 
         View v = new View(this);
@@ -77,6 +78,7 @@ public class KioskGameActivity extends AppCompatActivity {
 
     private void showStep2() {
         tvSubtitle.setText("2. 먹고가기를 선택하세요!");
+        tvSubtitle.setTextSize(30);
         contentFrame.removeAllViews();
 
         LinearLayout lay = new LinearLayout(this);
@@ -85,11 +87,13 @@ public class KioskGameActivity extends AppCompatActivity {
         lay.setBackgroundColor(Color.LTGRAY);
 
         Button btnPack = createBtn("포장");
+        btnPack.setTextSize(30);
         btnPack.setOnClickListener(x ->
                 Toast.makeText(this, "다시 선택해주세요!", Toast.LENGTH_SHORT).show()
         );
 
         Button btnDine = createBtn("먹고가기");
+        btnDine.setTextSize(30);
         btnDine.setOnClickListener(x -> showStep3());
 
         lay.addView(btnPack);
@@ -98,7 +102,8 @@ public class KioskGameActivity extends AppCompatActivity {
     }
 
     private void showStep3() {
-        tvSubtitle.setText("3. *버거*를 선택하세요!");
+        tvSubtitle.setText("3. 버거를 선택하세요!");
+        tvSubtitle.setTextSize(30);
         contentFrame.removeAllViews();
 
         // 키오스크 UI 구성
@@ -115,7 +120,7 @@ public class KioskGameActivity extends AppCompatActivity {
         header.setTextColor(Color.WHITE);
         header.setTextSize(18f);
         header.setGravity(Gravity.CENTER);
-        header.setBackgroundColor(Color.parseColor("#3F51B5"));
+        header.setBackgroundColor(Color.parseColor("#feead2"));
         parent.addView(header, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(48)
         ));
@@ -131,7 +136,7 @@ public class KioskGameActivity extends AppCompatActivity {
         // 네비게이션
         LinearLayout nav = new LinearLayout(this);
         nav.setOrientation(LinearLayout.VERTICAL);
-        nav.setBackgroundColor(Color.parseColor("#3F51B5"));
+        nav.setBackgroundColor(Color.parseColor("#feead2"));
         body.addView(nav, new LinearLayout.LayoutParams(dp(48), ViewGroup.LayoutParams.MATCH_PARENT));
 
         String[] tabs = {"단일","세트","이벤트"};
@@ -166,10 +171,11 @@ public class KioskGameActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText(c);
             btn.setTextColor(Color.WHITE);
-            btn.setBackgroundColor(Color.parseColor("#3F51B5"));
+            btn.setTextSize(18);
+            btn.setBackgroundColor(Color.parseColor("#feead2"));
 
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-            lp.width = 0;
+            lp.width = dp(140);
             lp.height = dp(80);
             lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             lp.setMargins(dp(8), dp(8), dp(8), dp(8));
@@ -188,7 +194,8 @@ public class KioskGameActivity extends AppCompatActivity {
     }
 
     private void showStep4() {
-        tvSubtitle.setText("4. *불고기 버거*를 드셔보실래요?");
+        tvSubtitle.setText("4. 불고기 버거를 드셔보실래요?");
+        tvSubtitle.setTextSize(30);
         contentFrame.removeAllViews();
 
         // 버거 선택 UI (showStep3과 유사한 구조)
@@ -205,7 +212,7 @@ public class KioskGameActivity extends AppCompatActivity {
         header.setTextColor(Color.WHITE);
         header.setTextSize(18f);
         header.setGravity(Gravity.CENTER);
-        header.setBackgroundColor(Color.parseColor("#3F51B5"));
+        header.setBackgroundColor(Color.parseColor("#feead2"));
         parent.addView(header, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(48)
         ));
@@ -221,7 +228,7 @@ public class KioskGameActivity extends AppCompatActivity {
         // 네비게이션
         LinearLayout nav = new LinearLayout(this);
         nav.setOrientation(LinearLayout.VERTICAL);
-        nav.setBackgroundColor(Color.parseColor("#3F51B5"));
+        nav.setBackgroundColor(Color.parseColor("#feead2"));
         body.addView(nav, new LinearLayout.LayoutParams(dp(48), ViewGroup.LayoutParams.MATCH_PARENT));
 
         String[] tabs = {"단일", "세트", "이벤트"};
@@ -256,11 +263,12 @@ public class KioskGameActivity extends AppCompatActivity {
         for (String b : burgers) {
             Button btn = new Button(this);
             btn.setText(b);
+            btn.setTextSize(18);
             btn.setTextColor(Color.WHITE);
-            btn.setBackgroundColor(Color.parseColor("#3F51B5"));
+            btn.setBackgroundColor(Color.parseColor("#feead2"));
 
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-            lp.width = 0;
+            lp.width = 140;
             lp.height = dp(80);
             lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             lp.setMargins(dp(8), dp(8), dp(8), dp(8));
@@ -279,28 +287,44 @@ public class KioskGameActivity extends AppCompatActivity {
         contentFrame.addView(parent);
     }
 
+    // TextView 헬퍼를 이렇게 바꿔두고…
+    private TextView createCell(String txt, float textSizeSp) {
+        TextView tv = new TextView(this);
+        tv.setText(txt);
+        // SP 단위로 크기 지정
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp);
+        tv.setPadding(dp(8), dp(8), dp(8), dp(8));
+        return tv;
+    }
+
+
     private void showStep5() {
-        tvSubtitle.setText("5. 장바구니에 성공적으로 담겼습니다. *결제*를 눌러주세요!");
+
+        tvSubtitle.setText("5. 장바구니에 성공적으로 담겼습니다. 결제를 눌러주세요!");
+        tvSubtitle.setTextSize(30);
         contentFrame.removeAllViews();
 
         TableLayout table = new TableLayout(this);
         table.setStretchAllColumns(true);
+        table.setBackgroundColor(Color.LTGRAY);
+
 
         TableRow hdr = new TableRow(this);
-        hdr.addView(createCell("메뉴"));
-        hdr.addView(createCell("수량"));
-        hdr.addView(createCell("가격"));
+        hdr.addView(createCell("메뉴", 30));
+        hdr.addView(createCell("수량", 30));
+        hdr.addView(createCell("가격", 30));
         table.addView(hdr);
 
         for (CartItem it : cart) {
             TableRow row = new TableRow(this);
-            row.addView(createCell(it.name));
-            row.addView(createCell("1"));
-            row.addView(createCell(it.price + "원"));
+            row.addView(createCell(it.name,     30));
+            row.addView(createCell("1",          30));
+            row.addView(createCell(it.price + "원", 30));
             table.addView(row);
         }
 
         Button pay = createBtn("결제");
+        pay.setTextSize(30);
         pay.setOnClickListener(x -> showStep6());
 
         LinearLayout lay = new LinearLayout(this);
@@ -312,6 +336,7 @@ public class KioskGameActivity extends AppCompatActivity {
 
     private void showStep6() {
         tvSubtitle.setText("6. 결제가 성공적으로 완료되었습니다!");
+        tvSubtitle.setTextSize(30);
 
         // 🎯 게임 완료 처리
         long completionTime = System.currentTimeMillis() - gameStartTime;
