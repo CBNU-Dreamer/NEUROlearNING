@@ -7,17 +7,24 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.neurolearning.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ShoppingCartGameActivity extends AppCompatActivity {
     private static final String TAG = "ShoppingCartGameActivity";
@@ -32,8 +39,7 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────
     // [2] 암기 화면 뷰
     private Button btnStartQuizAfterTimer;
-    // CheckBox들은 XML에서 clickable="false"로 지정해 두었으므로,
-    // 단순 시각적 표시용입니다.
+    private LinearLayout llItemList; // 체크박스들이 들어갈 컨테이너
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
@@ -44,18 +50,23 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
 
     // ─────────────────────────────────────────────────────────────────
     // [4] 퀴즈 화면 뷰
-    private ToggleButton tbOpt1, tbOpt2, tbOpt3, tbOpt4, tbOpt5, tbOpt6;
+    private LinearLayout llQuizOptions; // 토글버튼들이 들어갈 컨테이너
+    private final List<ToggleButton> quizButtons = new ArrayList<>();
     private TextView tvSelectedItems;
     private TextView tvQuizResult;
     private Button btnSubmitQuiz;
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
-    // [5] 정답 리스트 (암기해야 할 물건 순서대로)
-    private final List<String> correctList = new ArrayList<>();
+    // [5] 🎯 랜덤 아이템 풀 및 정답 관리
+    private final List<String> allItems = Arrays.asList(
+            "칫솔", "치약", "샤인머스캣", "물", "음료", "과자",
+            "빵", "우유", "사과", "바나나", "라면", "계란",
+            "쌀", "김치", "고기", "생선", "야채", "과일"
+    );
 
-    // [6] 사용자가 선택한 순서 (토글 버튼을 누른 순서대로 순서를 유지)
-    private final List<String> userSelected = new ArrayList<>();
+    private final List<String> correctAnswers = new ArrayList<>(); // 암기해야 할 4개 아이템
+    private final Set<String> userSelected = new HashSet<>();     // 사용자가 선택한 아이템들 (순서 무관)
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
@@ -93,32 +104,22 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
 
         // 2) 암기 화면 뷰 바인딩
         btnStartQuizAfterTimer = findViewById(R.id.btnStartQuizAfterTimer);
+        llItemList = findViewById(R.id.llItemList);
 
         // 3) 준비 화면 뷰 바인딩
         btnReadyYes = findViewById(R.id.btnReadyYes);
         btnReadyMore = findViewById(R.id.btnReadyMore);
 
         // 4) 퀴즈 화면 뷰 바인딩
-        tbOpt1 = findViewById(R.id.tb_opt1);
-        tbOpt2 = findViewById(R.id.tb_opt2);
-        tbOpt3 = findViewById(R.id.tb_opt3);
-        tbOpt4 = findViewById(R.id.tb_opt4);
-        tbOpt5 = findViewById(R.id.tb_opt5);
-        tbOpt6 = findViewById(R.id.tb_opt6);
-
+        llQuizOptions = findViewById(R.id.llQuizOptions);
         tvSelectedItems = findViewById(R.id.tvSelectedItems);
         tvQuizResult = findViewById(R.id.tvQuizResult);
         btnSubmitQuiz = findViewById(R.id.btnSubmitQuiz);
         // ─────────────────────────────────────────────────────────────
 
         // ─────────────────────────────────────────────────────────────
-        // [7] 정답 리스트 초기화
-        correctList.add("칫솔");
-        correctList.add("치약");
-        correctList.add("샤인머스캣");
-        correctList.add("물");
-
-        Log.d(TAG, "정답 리스트: " + correctList.toString());
+        // [6] 🎯 랜덤 게임 초기화
+        generateRandomGame();
         // ─────────────────────────────────────────────────────────────
 
         // ─────────────────────────────────────────────────────────────
@@ -132,29 +133,7 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
             startMemorizeTimer();
         });
 
-        // (D) 퀴즈 옵션 토글 버튼 리스너
-        View.OnClickListener quizOptionListener = v -> {
-            if (gameCompleted) return;
-
-            ToggleButton tb = (ToggleButton) v;
-            String item = tb.getText().toString();
-            if (tb.isChecked()) {
-                userSelected.add(item);
-                Log.d(TAG, "아이템 선택: " + item);
-            } else {
-                userSelected.remove(item);
-                Log.d(TAG, "아이템 선택 해제: " + item);
-            }
-            updateSelectedItemsText();
-        };
-        tbOpt1.setOnClickListener(quizOptionListener);
-        tbOpt2.setOnClickListener(quizOptionListener);
-        tbOpt3.setOnClickListener(quizOptionListener);
-        tbOpt4.setOnClickListener(quizOptionListener);
-        tbOpt5.setOnClickListener(quizOptionListener);
-        tbOpt6.setOnClickListener(quizOptionListener);
-
-        // (E) 퀴즈 제출 버튼 리스너
+        // (D) 퀴즈 제출 버튼 리스너
         btnSubmitQuiz.setOnClickListener(v -> {
             if (gameCompleted) return;
 
@@ -164,6 +143,109 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
         });
         // ─────────────────────────────────────────────────────────────
     }
+
+    // ─────────────────────────────────────────────────────────────────
+    // [🎯 NEW] 랜덤 게임 생성
+    private void generateRandomGame() {
+        // (1) 전체 아이템에서 랜덤하게 4개 선택
+        List<String> shuffledItems = new ArrayList<>(allItems);
+        Collections.shuffle(shuffledItems);
+
+        correctAnswers.clear();
+        for (int i = 0; i < 4; i++) {
+            correctAnswers.add(shuffledItems.get(i));
+        }
+
+        Log.d(TAG, "🎯 랜덤 정답 아이템들: " + correctAnswers.toString());
+
+        // (2) 암기 화면에 동적으로 체크박스 생성
+        createMemorizeCheckboxes();
+
+        // (3) 퀴즈 화면에 동적으로 토글버튼 생성 (정답 4개 + 오답 4개)
+        createQuizButtons();
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // [🎯 NEW] 암기 화면 체크박스 동적 생성
+    private void createMemorizeCheckboxes() {
+        llItemList.removeAllViews(); // 기존 뷰들 제거
+
+        for (int i = 0; i < correctAnswers.size(); i++) {
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(correctAnswers.get(i));
+            checkBox.setTextSize(16);
+            checkBox.setClickable(false);
+            checkBox.setFocusable(false);
+
+            // 첫 번째 아이템만 체크된 상태로 시작
+            checkBox.setChecked(i == 0);
+
+            llItemList.addView(checkBox);
+        }
+
+        Log.d(TAG, "암기 화면 체크박스 " + correctAnswers.size() + "개 생성 완료");
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // [🎯 NEW] 퀴즈 화면 토글버튼 동적 생성
+    private void createQuizButtons() {
+        llQuizOptions.removeAllViews();
+        quizButtons.clear();
+
+        // (1) 정답 4개 + 랜덤 오답 4개 = 총 8개 선택지
+        List<String> quizOptions = new ArrayList<>(correctAnswers);
+
+        // (2) 오답 4개 추가
+        List<String> remainingItems = new ArrayList<>(allItems);
+        remainingItems.removeAll(correctAnswers); // 정답 제외
+        Collections.shuffle(remainingItems);
+
+        for (int i = 0; i < 4 && i < remainingItems.size(); i++) {
+            quizOptions.add(remainingItems.get(i));
+        }
+
+        // (3) 선택지 섞기
+        Collections.shuffle(quizOptions);
+
+        // (4) 토글버튼 생성
+        for (String item : quizOptions) {
+            ToggleButton toggleButton = new ToggleButton(this);
+            toggleButton.setTextOff(item);
+            toggleButton.setTextOn(item);
+
+            // 레이아웃 파라미터 설정
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    (int) (48 * getResources().getDisplayMetrics().density) // 48dp를 px로 변환
+            );
+            params.topMargin = (int) (8 * getResources().getDisplayMetrics().density);
+            toggleButton.setLayoutParams(params);
+
+            // 클릭 리스너 설정
+            toggleButton.setOnClickListener(v -> {
+                if (gameCompleted) return;
+
+                ToggleButton tb = (ToggleButton) v;
+                String selectedItem = tb.getText().toString();
+
+                if (tb.isChecked()) {
+                    userSelected.add(selectedItem);
+                    Log.d(TAG, "아이템 선택: " + selectedItem);
+                } else {
+                    userSelected.remove(selectedItem);
+                    Log.d(TAG, "아이템 선택 해제: " + selectedItem);
+                }
+                updateSelectedItemsText();
+            });
+
+            llQuizOptions.addView(toggleButton);
+            quizButtons.add(toggleButton);
+        }
+
+        Log.d(TAG, "퀴즈 화면 토글버튼 " + quizOptions.size() + "개 생성 완료");
+        Log.d(TAG, "퀴즈 선택지: " + quizOptions.toString());
+    }
+    // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
     // [A] 화면 전환 메서드들
@@ -214,12 +296,10 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────
     // [C] 퀴즈 화면 초기화
     private void resetQuizState() {
-        tbOpt1.setChecked(false);
-        tbOpt2.setChecked(false);
-        tbOpt3.setChecked(false);
-        tbOpt4.setChecked(false);
-        tbOpt5.setChecked(false);
-        tbOpt6.setChecked(false);
+        // 모든 토글버튼 초기화
+        for (ToggleButton button : quizButtons) {
+            button.setChecked(false);
+        }
 
         userSelected.clear();
         tvSelectedItems.setText("선택된 물건: ");
@@ -232,9 +312,10 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
     // [D] 사용자가 선택한 목록을 TextView에 업데이트
     private void updateSelectedItemsText() {
         StringBuilder sb = new StringBuilder("선택된 물건: ");
-        for (int i = 0; i < userSelected.size(); i++) {
-            sb.append(userSelected.get(i));
-            if (i < userSelected.size() - 1) {
+        List<String> selectedList = new ArrayList<>(userSelected);
+        for (int i = 0; i < selectedList.size(); i++) {
+            sb.append(selectedList.get(i));
+            if (i < selectedList.size() - 1) {
                 sb.append(", ");
             }
         }
@@ -243,41 +324,36 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────
 
     // ─────────────────────────────────────────────────────────────────
-    // [E] 퀴즈 정답 검사 및 게임 완료 처리
+    // [E] 🎯 퀴즈 정답 검사 (순서 무관, 개수와 내용만 확인)
     private void checkQuizAnswer() {
         // (1) 물건 개수 비교
-        if (userSelected.size() != correctList.size()) {
-            tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            tvQuizResult.setText("물건 개수가 다릅니다. 다시 확인하세요!");
-            Log.d(TAG, "개수 불일치: 선택 " + userSelected.size() + "개, 정답 " + correctList.size() + "개");
+        if (userSelected.size() != correctAnswers.size()) {
+            tvQuizResult.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+            tvQuizResult.setText("물건 개수가 다릅니다. " + correctAnswers.size() + "개를 선택하세요!");
+            Log.d(TAG, "개수 불일치: 선택 " + userSelected.size() + "개, 정답 " + correctAnswers.size() + "개");
             return;
         }
 
-        // (2) 순서 및 내용 비교
-        boolean allMatch = true;
-        for (int i = 0; i < correctList.size(); i++) {
-            if (!correctList.get(i).equals(userSelected.get(i))) {
-                allMatch = false;
-                Log.d(TAG, "순서 " + i + " 불일치: 선택 '" + userSelected.get(i) + "', 정답 '" + correctList.get(i) + "'");
-                break;
-            }
-        }
+        // (2) 🎯 순서 무관하게 내용만 비교 (Set 사용)
+        Set<String> correctSet = new HashSet<>(correctAnswers);
+        Set<String> userSet = new HashSet<>(userSelected);
 
-        if (allMatch) {
+        if (correctSet.equals(userSet)) {
             correctAttempts = 1;
             gameCompleted = true;
 
-            tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-            tvQuizResult.setText("정답입니다! 잘했어요 🎉");
+            tvQuizResult.setTextColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark));
+            tvQuizResult.setText("정답입니다! 모든 물건을 정확히 기억하셨네요! 🎉");
 
             Log.d(TAG, "✅ 게임 성공! 시도 횟수: " + totalAttempts);
 
             // 🎯 게임 완료 로직 호출 (잠시 후 결과 저장 및 종료)
-            new Handler().postDelayed(this::completeGame, 1000);
+            new Handler().postDelayed(this::completeGame, 1500);
         } else {
-            tvQuizResult.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            tvQuizResult.setText("다시 한 번 도전해 보세요!");
+            tvQuizResult.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+            tvQuizResult.setText("다시 한 번 생각해 보세요! 정답: " + correctAnswers.toString());
             Log.d(TAG, "❌ 오답, 재시도 가능");
+            Log.d(TAG, "정답: " + correctSet + ", 선택: " + userSet);
         }
     }
     // ─────────────────────────────────────────────────────────────────
@@ -314,12 +390,9 @@ public class ShoppingCartGameActivity extends AppCompatActivity {
      * 🎯 모든 버튼 활성화/비활성화
      */
     private void setAllButtonsEnabled(boolean enabled) {
-        tbOpt1.setEnabled(enabled);
-        tbOpt2.setEnabled(enabled);
-        tbOpt3.setEnabled(enabled);
-        tbOpt4.setEnabled(enabled);
-        tbOpt5.setEnabled(enabled);
-        tbOpt6.setEnabled(enabled);
+        for (ToggleButton button : quizButtons) {
+            button.setEnabled(enabled);
+        }
         btnSubmitQuiz.setEnabled(enabled);
     }
     // ─────────────────────────────────────────────────────────────────
