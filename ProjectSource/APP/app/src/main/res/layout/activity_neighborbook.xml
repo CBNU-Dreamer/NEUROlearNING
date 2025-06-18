@@ -16,7 +16,8 @@
 
     <!-- 툴바 아래 스크롤 가능한 컨테이너 -->
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="330dp"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="#FFF9F0"
