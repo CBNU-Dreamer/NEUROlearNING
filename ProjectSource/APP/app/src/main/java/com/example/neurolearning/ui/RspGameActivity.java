@@ -38,7 +38,7 @@ public class RspGameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kiosk_game); // 레이아웃 재사용
+        setContentView(R.layout.activity_rsp_game); // 레이아웃 재사용
 
         // 🎯 사용자 정보 가져오기
         currentUserId = getIntent().getStringExtra("userId");
@@ -85,19 +85,20 @@ public class RspGameActivity extends AppCompatActivity {
         // NPC 대화 + 이미지
         TextView tvNpc = new TextView(this);
         tvNpc.setText("예솔양: 저는 " + npcChoice + "를 냈어요!");
-        tvNpc.setTextSize(18f);
+        tvNpc.setTextSize(24f);
+        tvNpc.setTextColor(Color.BLACK);
         layout.addView(tvNpc);
 
         ImageView npcImg = new ImageView(this);
         npcImg.setImageResource(getImageResId(npcChoice));
-        npcImg.setLayoutParams(new LinearLayout.LayoutParams(dp(120), dp(120)));
+        npcImg.setLayoutParams(new LinearLayout.LayoutParams(dp(200), dp(200)));
         layout.addView(npcImg);
 
         // 조건 텍스트
         TextView tvCond = new TextView(this);
         tvCond.setText(playerCondition);
         tvCond.setTextSize(20f);
-        tvCond.setTextColor(Color.BLUE);
+        tvCond.setTextColor(Color.BLACK);
         tvCond.setPadding(0, dp(16), 0, dp(16));
         layout.addView(tvCond);
 
@@ -111,7 +112,7 @@ public class RspGameActivity extends AppCompatActivity {
             btn.setImageResource(getImageResId(choice));
             btn.setBackgroundColor(Color.TRANSPARENT);
             btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(100), dp(100));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(120), dp(120));
             lp.setMargins(dp(8), dp(8), dp(8), dp(8));
             btn.setLayoutParams(lp);
 
