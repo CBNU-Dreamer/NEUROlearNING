@@ -68,7 +68,7 @@
         android:backgroundTint="#F57C00"
         android:text="어서 답장해봐요!"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="20sp"/>
         <!--app:strokeColor="#000000" -->
         <!-- app:strokeWidth="1dp" />-->
 </LinearLayout>

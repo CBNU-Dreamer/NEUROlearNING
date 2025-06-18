@@ -10,6 +10,12 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.widget.ImageView;
+import android.view.Window;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,6 +79,26 @@ public class Story9Activity extends AppCompatActivity {
         // 뷰 바인딩
         tvNpcDialog = startView.findViewById(R.id.tvNpcDialog);
         btnPlayNpcDialog = startView.findViewById(R.id.btnPlayNpcDialog);
+
+        // 기존에 뷰 바인딩한 이후에 추가:
+        ImageView ivNpcImage = startView.findViewById(R.id.ivNpcImage);
+        ivNpcImage.setOnClickListener(v -> {
+            // Dialog 생성
+            final Dialog letterDialog = new Dialog(this);
+            letterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            letterDialog.setContentView(R.layout.popup_letter);
+            // 배경 투명 처리
+            letterDialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(Color.TRANSPARENT)
+            );
+
+            // 닫기 버튼 처리
+            Button btnClose = letterDialog.findViewById(R.id.btnClosePopup);
+            btnClose.setOnClickListener(v2 -> letterDialog.dismiss());
+
+            letterDialog.show();
+        });
+
 
         // 재생 버튼 클릭 → TtsHelper 호출
         btnPlayNpcDialog.setOnClickListener(v ->
