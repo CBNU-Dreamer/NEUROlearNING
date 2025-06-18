@@ -2,6 +2,8 @@ package com.example.neurolearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,16 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.neurolearning.R;
 import com.example.neurolearning.data.User;
 import com.example.neurolearning.data.UserRepository;
+import com.example.neurolearning.utils.LoginPreferencesHelper;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SignInActivity";
 
     private UserRepository userRepository;
+    private LoginPreferencesHelper loginPrefsHelper;
 
     private EditText editTextName;
     private EditText editTextPhone;
     private Button btnLogin;
-    private TextView tvGoToSignUp; // 🎯 회원가입 링크 추가
+    private TextView tvGoToSignUp;
+
+    private boolean isNameFieldCleared = false;
+    private boolean isPhoneFieldCleared = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +40,19 @@ public class SignInActivity extends AppCompatActivity {
             setContentView(R.layout.activity_signin);
             Log.d(TAG, "SignInActivity 시작");
 
-            // Repository 초기화
+            // Repository와 Helper 초기화
             userRepository = new UserRepository(getApplication());
+            loginPrefsHelper = new LoginPreferencesHelper(this);
 
             // UI 요소 연결
             initViews();
 
+            // 최근 로그인 정보 자동 입력
+            loadRecentLoginInfo();
+
             // 이벤트 리스너 설정
             setClickListeners();
+            setupTextWatchers();
 
             // 뒤로가기 콜백 설정
             setupBackPressedCallback();
@@ -59,28 +71,94 @@ public class SignInActivity extends AppCompatActivity {
             editTextName = findViewById(R.id.editTextName);
             editTextPhone = findViewById(R.id.editTextPhone);
             btnLogin = findViewById(R.id.btnLogin);
-            tvGoToSignUp = findViewById(R.id.tvGoToSignUp); // 🎯 회원가입 링크 연결
+            tvGoToSignUp = findViewById(R.id.tvGoToSignUp);
 
             Log.d(TAG, "UI 요소 연결 완료");
-
-            // 🎯 null 체크
-            if (editTextName == null) {
-                Log.e(TAG, "❌ editTextName이 null입니다. activity_signin.xml을 확인하세요.");
-            }
-            if (editTextPhone == null) {
-                Log.e(TAG, "❌ editTextPhone이 null입니다. activity_signin.xml을 확인하세요.");
-            }
-            if (btnLogin == null) {
-                Log.e(TAG, "❌ btnLogin이 null입니다. activity_signin.xml을 확인하세요.");
-            }
-            if (tvGoToSignUp == null) {
-                Log.e(TAG, "❌ tvGoToSignUp이 null입니다. activity_signin.xml을 확인하세요.");
-            }
 
         } catch (Exception e) {
             Log.e(TAG, "❌ UI 요소 연결 중 오류", e);
             throw e;
         }
+    }
+
+    /**
+     * 🎯 최근 로그인 정보를 자동으로 입력
+     */
+    private void loadRecentLoginInfo() {
+        try {
+            LoginPreferencesHelper.LoginInfo lastLogin = loginPrefsHelper.getLastLoginInfo();
+
+            if (lastLogin != null) {
+                editTextName.setText(lastLogin.name);
+                editTextPhone.setText(lastLogin.phone);
+
+                // 힌트 텍스트 변경으로 최근 로그인임을 표시
+                editTextName.setHint("최근 로그인: " + lastLogin.name);
+                editTextPhone.setHint("최근 로그인: " + lastLogin.phone);
+
+                Log.d(TAG, "✅ 최근 로그인 정보 자동 입력: " + lastLogin.name);
+            } else {
+                Log.d(TAG, "최근 로그인 정보 없음");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "❌ 최근 로그인 정보 로드 실패", e);
+        }
+    }
+
+    /**
+     * 🎯 입력창 클릭 시 기존 값 초기화하는 TextWatcher 설정
+     */
+    private void setupTextWatchers() {
+        // 이름 입력창 클릭 시 초기화
+        editTextName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !isNameFieldCleared) {
+                editTextName.setText("");
+                editTextName.setHint("이름을 입력해주세요!");
+                isNameFieldCleared = true;
+                Log.d(TAG, "이름 입력창 초기화");
+            }
+        });
+
+        // 전화번호 입력창 클릭 시 초기화
+        editTextPhone.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !isPhoneFieldCleared) {
+                editTextPhone.setText("");
+                editTextPhone.setHint("전화번호를 입력해주세요!");
+                isPhoneFieldCleared = true;
+                Log.d(TAG, "전화번호 입력창 초기화");
+            }
+        });
+
+        // 텍스트 변경 감지 (사용자가 직접 입력하기 시작하면 필드가 수정된 것으로 간주)
+        editTextName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) { // 사용자가 텍스트를 추가한 경우
+                    isNameFieldCleared = true;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        editTextPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) { // 사용자가 텍스트를 추가한 경우
+                    isPhoneFieldCleared = true;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
     private void setClickListeners() {
@@ -90,14 +168,12 @@ public class SignInActivity extends AppCompatActivity {
                 btnLogin.setOnClickListener(v -> performLogin());
             }
 
-            // 🎯 회원가입 링크 클릭 이벤트
+            // 회원가입 링크 클릭 이벤트
             if (tvGoToSignUp != null) {
                 tvGoToSignUp.setOnClickListener(v -> {
                     Log.d(TAG, "회원가입 텍스트 클릭 - SignUpActivity로 이동");
                     navigateToSignUp();
                 });
-            } else {
-                Log.w(TAG, "⚠️ tvGoToSignUp이 null입니다. 회원가입 링크가 XML에 없을 수 있습니다.");
             }
 
             Log.d(TAG, "클릭 리스너 설정 완료");
@@ -127,18 +203,20 @@ public class SignInActivity extends AppCompatActivity {
                 return;
             }
 
-            // 🎯 새로운 로그인 방식 (이름 + 전화번호)
+            // 🎯 로그인 처리
             new Thread(() -> {
                 try {
                     User user = userRepository.loginUser(name, phone);
 
                     runOnUiThread(() -> {
                         if (user != null) {
-                            // 로그인 성공
+                            // 🎯 로그인 성공 시 최근 로그인 정보 저장
+                            loginPrefsHelper.saveLastLoginInfo(name, phone);
+
                             Log.d(TAG, "✅ 로그인 성공: " + user.getName() + " (UUID: " + user.getUserId() + ")");
                             Toast.makeText(this, user.getName() + "님, 환영합니다!", Toast.LENGTH_SHORT).show();
 
-                            // StoryActivity로 이동 (사용자 ID 전달)
+                            // StoryActivity로 이동
                             navigateToStory(user);
                         } else {
                             // 로그인 실패
@@ -163,7 +241,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     /**
-     * 🎯 StoryActivity로 안전하게 이동
+     * StoryActivity로 안전하게 이동
      */
     private void navigateToStory(User user) {
         try {
@@ -186,7 +264,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     /**
-     * 🎯 SignUpActivity로 안전하게 이동
+     * SignUpActivity로 안전하게 이동
      */
     private void navigateToSignUp() {
         try {
@@ -203,12 +281,11 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    // 🎯 뒤로가기 버튼 처리
+    // 뒤로가기 버튼 처리
     private void setupBackPressedCallback() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 🎯 첫 화면이므로 앱 종료
                 finishAffinity(); // 앱의 모든 액티비티 종료
             }
         });

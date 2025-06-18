@@ -10,7 +10,7 @@
 
         <!-- (C) 상태바 아이콘(글씨)을 어두운 색/밝은 색 중 어떤 톤으로 보일지 결정 -->
         <!-- true면 상태바 아이콘이 어두운 톤(검정)으로, false면 밝은 톤(흰색)으로 그려집니다. -->
-        <!-- 예를 들어, 배경(#FFF9F0)이 밝은 색이므로 “검은색 아이콘”을 원한다면 true -->
+        <!-- 예를 들어, 배경(#FFF9F0)이 밝은 색이므로 "검은색 아이콘"을 원한다면 true -->
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- (D) 앱 전체 배경(액티비티 창 배경)을 지정하려면 아래처럼도 추가 가능 -->
@@ -24,4 +24,17 @@
 
     <style name="Theme.NEUROLEARNING"
         parent="Base.Theme.NEUROLEARNING" />
+
+    <!-- 🎯 스플래시 화면 전용 테마 -->
+    <style name="SplashTheme" parent="Base.Theme.NEUROLEARNING">
+        <!-- 스플래시에서는 액션바 완전히 숨김 -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 전체화면 효과 -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- 스플래시 배경색 -->
+        <item name="android:windowBackground">#FFF9F0</item>
+        <!-- 상태바도 배경과 같은 색으로 -->
+        <item name="android:statusBarColor">#FFF9F0</item>
+    </style>
 </resources>

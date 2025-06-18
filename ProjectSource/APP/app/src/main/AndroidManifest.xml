@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.example.neurolearning">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.neurolearning">
 
     <application
         android:allowBackup="true"
@@ -13,19 +13,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NEUROLEARNING"
-
         tools:targetApi="31">
 
+        <!-- 🎯 스플래시 화면을 시작 액티비티로 변경 -->
         <activity
-            android:name="com.example.neurolearning.ui.SignInActivity"
-            android:exported="true">
-
+            android:name="com.example.neurolearning.ui.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- 로그인 화면 -->
+        <activity
+            android:name="com.example.neurolearning.ui.SignInActivity"
+            android:exported="false" />
+
+        <!-- 회원가입 화면 -->
         <activity
             android:name="com.example.neurolearning.ui.SignUpActivity"
             android:exported="false"/>
@@ -40,7 +46,6 @@
             android:label="UserInfo"
             android:exported="false"/>
 
-
         <!-- 스토리 리스트 (홈) -->
         <activity android:name="com.example.neurolearning.ui.StoryActivity" android:exported="true" />
 
@@ -53,7 +58,6 @@
         <activity android:name="com.example.neurolearning.ui.Story2Activity" android:exported="true" />
         <!-- 키오스크 게임 화면 -->
         <activity android:name="com.example.neurolearning.ui.KioskGameActivity" android:exported="true" />
-
 
         <!-- 스토리3 상세 / 가위바위보 게임 진입 화면 -->
         <activity android:name="com.example.neurolearning.ui.Story3Activity" android:exported="true" />
@@ -70,7 +74,6 @@
         <!-- 숫자 게임 화면 -->
         <activity android:name="com.example.neurolearning.ui.NumberGameActivity" android:exported="true" />
 
-
         <!-- 스토리6상세 / 쇼핑 게임 진입 화면 -->
         <activity android:name="com.example.neurolearning.ui.Story6Activity" android:exported="true" />
         <!-- 쇼핑 게임 화면 -->
@@ -86,14 +89,10 @@
         <!-- 이름 게임 화면 -->
         <activity android:name="com.example.neurolearning.ui.NameGameActivity" android:exported="true" />
 
-
         <!-- 스토리9상세 / 편지 게임 진입 화면 -->
         <activity android:name="com.example.neurolearning.ui.Story9Activity" android:exported="true" />
         <!-- 편지 게임 화면 -->
         <activity android:name="com.example.neurolearning.ui.LetterGameActivity" android:exported="true" />
-
-
-
 
     </application>
 </manifest>
