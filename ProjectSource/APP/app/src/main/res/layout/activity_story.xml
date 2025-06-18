@@ -38,7 +38,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="이웃 사전" />
+            android:text="이웃 사전"
+            android:textColor="#000000"/>
 
         <Space
             android:layout_width="16dp"
@@ -49,6 +50,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="사용자 정보" />
+            android:text="사용자 정보"
+            android:textColor="#000000"/>
     </LinearLayout>
 </LinearLayout>

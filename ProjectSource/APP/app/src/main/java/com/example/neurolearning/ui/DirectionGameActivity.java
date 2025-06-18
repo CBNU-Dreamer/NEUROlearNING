@@ -1,0 +1,291 @@
+package com.example.neurolearning.ui;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.neurolearning.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class DirectionGameActivity extends AppCompatActivity {
+    private static final String TAG = "DirectionGameActivity";
+    private static final int SEQUENCE_LENGTH = 4;
+    private static final long DISPLAY_INTERVAL_MS = 3000; // 각 화살표 당 3초 간격
+
+    private TextView tvGameTitle;
+    private TextView tvInstruction;
+    private TextView tvNpcTalk;
+    private ImageView ivArrowShow;
+    private TextView tvFeedback;
+    private LinearLayout layoutUserInput;
+
+    private ImageButton btnUp;
+    private ImageButton btnDown;
+    private ImageButton btnLeft;
+    private ImageButton btnRight;
+
+    private final Handler handler = new Handler();
+
+    private final List<Direction> sequence = new ArrayList<>();
+    private final List<Direction> userInput = new ArrayList<>();
+    private int displayIndex = 0;
+    private boolean acceptingInput = false;
+
+    // 🎯 새로운 DB 구조를 위한 필드들
+    private String currentUserId;
+    private String currentUserName;
+    private int currentStoryNumber;
+    private int mistakeCount = 0;
+    private boolean gameCompleted = false;
+
+    private enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_direction_game);
+
+        // 🎯 사용자 정보 가져오기
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+        currentStoryNumber = getIntent().getIntExtra("storyNumber", 4);
+
+        Log.d(TAG, "방향 게임 시작: " + currentUserName + " (Story " + currentStoryNumber + ")");
+
+        // 뷰 바인딩
+        tvGameTitle = findViewById(R.id.tvGameTitle);
+        tvInstruction = findViewById(R.id.tvInstruction);
+        tvNpcTalk = findViewById(R.id.tvNpcTalk);
+        ivArrowShow = findViewById(R.id.ivArrowShow);
+        tvFeedback = findViewById(R.id.tvFeedback);
+        layoutUserInput = findViewById(R.id.layoutUserInput);
+
+        btnUp = findViewById(R.id.btnUp);
+        btnDown = findViewById(R.id.btnDown);
+        btnLeft = findViewById(R.id.btnLeft);
+        btnRight = findViewById(R.id.btnRight);
+
+        // 초기 상태: 화살표 표시 영역 숨김, 버튼 비활성화
+        ivArrowShow.setVisibility(View.INVISIBLE);
+        setButtonsEnabled(false);
+
+        // 랜덤 시퀀스 생성 후 화면에 순차적으로 보여주기
+        generateRandomSequence();
+        showSequence();
+
+        // 버튼 클릭 리스너 설정
+        btnUp.setOnClickListener(v -> handleUserInput(Direction.UP));
+        btnDown.setOnClickListener(v -> handleUserInput(Direction.DOWN));
+        btnLeft.setOnClickListener(v -> handleUserInput(Direction.LEFT));
+        btnRight.setOnClickListener(v -> handleUserInput(Direction.RIGHT));
+    }
+
+    /**
+     * 1) SEQUENCE_LENGTH만큼 무작위로 방향 리스트를 생성
+     */
+    private void generateRandomSequence() {
+        sequence.clear();
+        Random rand = new Random();
+        Direction[] values = Direction.values();
+        for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+            int idx = rand.nextInt(values.length);
+            sequence.add(values[idx]);
+        }
+        Log.d(TAG, "생성된 시퀀스 길이: " + sequence.size());
+    }
+
+    /**
+     * 2) sequence 목록을 순차적으로 ivArrowShow에 표시
+     */
+    private void showSequence() {
+        displayIndex = 0;
+        tvNpcTalk.setText("강아지가 어디로 갔냐면...");
+        tvFeedback.setText("방향을 잘 보고 기억해서 따라 입력하세요!");
+
+        handler.postDelayed(this::displayNextArrow, 500);
+    }
+
+    private void displayNextArrow() {
+        if (displayIndex < sequence.size()) {
+            // 현재 인덱스 화살표 보이기
+            Direction dir = sequence.get(displayIndex);
+            ivArrowShow.setImageResource(getDrawableForDirection(dir));
+            ivArrowShow.setVisibility(View.VISIBLE);
+
+            // 700ms 후 화살표 숨김, 300ms 후 다음 화살표
+            handler.postDelayed(() -> {
+                ivArrowShow.setVisibility(View.INVISIBLE);
+                displayIndex++;
+                handler.postDelayed(this::displayNextArrow, 300);
+            }, 700);
+        } else {
+            // 시퀀스 표시가 모두 끝남 → 사용자 입력 허용
+            enableUserInput();
+        }
+    }
+
+    /**
+     * 3) 사용자 버튼 입력을 처리
+     */
+    private void handleUserInput(Direction dir) {
+        if (!acceptingInput || gameCompleted) return;
+
+        // 현재 입력 위치에서 정답 확인
+        int currentIndex = userInput.size();
+        Direction correctDirection = sequence.get(currentIndex);
+
+        // 시각적으로 layoutUserInput에 작은 ImageView 추가
+        ImageView iv = new ImageView(this);
+        iv.setImageResource(getDrawableForDirection(dir));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
+        params.setMargins(8, 0, 8, 0);
+        iv.setLayoutParams(params);
+
+        // 🎯 정답/오답에 따른 시각적 피드백
+        if (dir == correctDirection) {
+            // 정답: 초록색 테두리 또는 기본 색상
+            iv.setBackgroundResource(android.R.color.transparent);
+        } else {
+            // 오답: 빨간색 테두리
+            iv.setBackgroundResource(android.R.color.holo_red_light);
+            mistakeCount++;
+            Log.d(TAG, "실수 발생! 현재 실수 횟수: " + mistakeCount);
+        }
+
+        layoutUserInput.addView(iv);
+        userInput.add(dir);
+
+        if (userInput.size() == sequence.size()) {
+            // 입력이 모두 끝났으면 채점
+            acceptingInput = false;
+            setButtonsEnabled(false);
+            checkUserAnswer();
+        }
+    }
+
+    /**
+     * 4) 사용자 입력과 정답 비교 후 피드백
+     */
+    private void checkUserAnswer() {
+        boolean allMatch = true;
+        for (int i = 0; i < sequence.size(); i++) {
+            if (sequence.get(i) != userInput.get(i)) {
+                allMatch = false;
+                break;
+            }
+        }
+
+        gameCompleted = true;
+
+        if (allMatch) {
+            tvFeedback.setText("정답입니다! 잘했어요 🐶");
+            tvNpcTalk.setText("와! 정말 잘했네요!");
+
+            // 🎯 게임 성공 - 결과 반환
+            finishGameWithResult(true, calculateScore());
+
+        } else {
+            tvFeedback.setText("아쉽네요… 다시 도전해보세요!");
+            tvNpcTalk.setText("조금 아쉽지만 괜찮아요!");
+
+            // 🎯 재시작 기회 제공 또는 실패로 처리
+            handler.postDelayed(() -> {
+                restartGame();
+            }, 2000);
+        }
+    }
+
+    /**
+     * 🎯 점수 계산 (완벽한 경우 100점, 실수할 때마다 감점)
+     */
+    private int calculateScore() {
+        int baseScore = 100;
+        int penalty = mistakeCount * 10; // 실수 1회당 10점 감점
+        return Math.max(0, baseScore - penalty);
+    }
+
+    /**
+     * 🎯 게임 재시작
+     */
+    private void restartGame() {
+        mistakeCount = 0;
+        gameCompleted = false;
+        userInput.clear();
+        layoutUserInput.removeAllViews();
+
+        generateRandomSequence();
+        showSequence();
+    }
+
+    /**
+     * 🎯 게임 완료 - 결과를 Story4Activity로 반환
+     */
+    private void finishGameWithResult(boolean success, int score) {
+        Log.d(TAG, "게임 완료 - 성공: " + success + ", 점수: " + score + ", 실수: " + mistakeCount);
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("score", score);
+        resultIntent.putExtra("mistakes", mistakeCount);
+        resultIntent.putExtra("success", success);
+
+        setResult(success ? RESULT_OK : RESULT_CANCELED, resultIntent);
+
+        // 2초 후 종료 (사용자가 결과를 볼 수 있도록)
+        handler.postDelayed(() -> finish(), 2000);
+    }
+
+    /**
+     * 5) 사용자 입력을 받을 준비 완료
+     */
+    private void enableUserInput() {
+        tvNpcTalk.setText("이제 방향을 입력해보세요!");
+        ivArrowShow.setVisibility(View.INVISIBLE);
+        acceptingInput = true;
+        setButtonsEnabled(true);
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        btnUp.setEnabled(enabled);
+        btnDown.setEnabled(enabled);
+        btnLeft.setEnabled(enabled);
+        btnRight.setEnabled(enabled);
+    }
+
+    /**
+     * 방향 enum에 대응하는 drawable 리소스 반환
+     */
+    private int getDrawableForDirection(Direction dir) {
+        switch (dir) {
+            case UP:
+                return R.drawable.arrow_up_custom;
+            case DOWN:
+                return R.drawable.arrow_down_custom;
+            case LEFT:
+                return R.drawable.arrow_left_custom;
+            case RIGHT:
+                return R.drawable.arrow_right_custom;
+            default:
+                return android.R.color.transparent;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
+}

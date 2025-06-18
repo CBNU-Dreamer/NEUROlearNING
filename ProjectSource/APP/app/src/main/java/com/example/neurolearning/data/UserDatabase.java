@@ -8,18 +8,16 @@ import androidx.room.RoomDatabase;
 @Database(
         entities = {
                 User.class,
-                GamePlayRecord.class,
-                UserGameStatus.class,
-                StoryStatus.class
+                GamePlayRecord.class  // 게임 기록만 별도 테이블로 관리
         },
-        version = 3, // 🎯 Foreign Key 제거로 인한 스키마 변경으로 버전 3
+        version = 5, // 새로운 User.java 구조에 맞춰 버전 업데이트
         exportSchema = false
 )
 public abstract class UserDatabase extends RoomDatabase {
     private static UserDatabase instance;
 
     public abstract UserDao userDao();
-    public abstract GameProgressDao gameProgressDao();
+    public abstract GameRecordDao gameRecordDao(); // 게임 기록만 관리하는 DAO
 
     public static synchronized UserDatabase getInstance(Context context) {
         if (instance == null) {

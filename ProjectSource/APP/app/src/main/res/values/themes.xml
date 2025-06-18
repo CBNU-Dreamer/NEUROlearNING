@@ -1,9 +1,40 @@
+<!-- res/values/themes/themes.xml -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.NEUROLEARNING" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.NEUROLEARNING"
+        parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- (A) 상태 바 배경색 지정 -->
+        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <!-- (B) Android 5.0(API 21)~에서 상태바 색 변경을 위해 반드시 필요 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!-- (C) 상태바 아이콘(글씨)을 어두운 색/밝은 색 중 어떤 톤으로 보일지 결정 -->
+        <!-- true면 상태바 아이콘이 어두운 톤(검정)으로, false면 밝은 톤(흰색)으로 그려집니다. -->
+        <!-- 예를 들어, 배경(#FFF9F0)이 밝은 색이므로 "검은색 아이콘"을 원한다면 true -->
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- (D) 앱 전체 배경(액티비티 창 배경)을 지정하려면 아래처럼도 추가 가능 -->
+        <item name="android:windowBackground">@color/background_color</item>
+
+        <!-- (선택) 툴바/앱바(AppBar)의 배경색(=Primary)도 바꾸고 싶다면 -->
+        <item name="colorPrimary">@color/background_color</item>
+        <!-- (선택) 툴바 아래 그림자나 테두리가 보이고 싶지 않다면 다음을 추가해서 그림자 없앰 -->
+        <item name="android:elevation">0dp</item>
     </style>
 
-    <style name="Theme.NEUROLEARNING" parent="Base.Theme.NEUROLEARNING" />
+    <style name="Theme.NEUROLEARNING"
+        parent="Base.Theme.NEUROLEARNING" />
+
+    <!-- 🎯 스플래시 화면 전용 테마 -->
+    <style name="SplashTheme" parent="Base.Theme.NEUROLEARNING">
+        <!-- 스플래시에서는 액션바 완전히 숨김 -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 전체화면 효과 -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- 스플래시 배경색 -->
+        <item name="android:windowBackground">#FFF9F0</item>
+        <!-- 상태바도 배경과 같은 색으로 -->
+        <item name="android:statusBarColor">#FFF9F0</item>
+    </style>
 </resources>

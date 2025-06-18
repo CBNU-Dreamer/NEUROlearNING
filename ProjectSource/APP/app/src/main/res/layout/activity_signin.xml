@@ -38,16 +38,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="아이디"
+            android:text="이름"
             android:textColor="#000000"
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/editTextId"
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@android:drawable/edit_text"
-            android:hint="accountid "
+            android:hint="이름을 입력해주세요!"
             android:inputType="text"
             android:minHeight="48dp"
             android:paddingHorizontal="12dp" />
@@ -56,17 +56,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="비밀번호"
+            android:text="전화번호"
             android:textColor="#000000"
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/editTextPw"
+            android:id="@+id/editTextPhone"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@android:drawable/edit_text"
-            android:hint="********"
-            android:inputType="textPassword"
+            android:hint="전화번호를 입력해주세요!"
+            android:inputType="phone"
             android:minHeight="48dp"
             android:paddingHorizontal="12dp" />
 
@@ -81,13 +81,19 @@
             app:strokeWidth="1dp" />
 
         <TextView
-            android:id="@+id/txtFindPw"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvGoToSignUp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="비밀번호를 잊으셨나요?"
-            android:textColor="#000000"
-            android:textSize="12sp" />
+            android:layout_marginTop="16dp"
+            android:text="가입하신 계정이 없으시다면 여기를 눌러주세요!"
+            android:textColor="#FF0000"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true" />
+
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

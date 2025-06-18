@@ -1,39 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFF9F0"
     android:padding="16dp">
 
-    <!-- NPC 소개 말풍선 -->
-    <TextView
-        android:id="@+id/tvNpcDialog"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="@drawable/ic_rounded"
-        android:padding="20dp"
-        android:text="(정류장 개수 기억 게임\nNPC 대사)"
-        android:textColor="#000000"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <!-- 이미지 -->
-    <ImageView
-        android:id="@+id/ivNpcImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="centerInside"
-        android:src="@drawable/neighbor8" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
 
-    <!-- 시작 버튼 -->
+            <!-- 대화창 -->
+
+            <!-- 음성 버튼: 오른쪽 상단에 배치 -->
+
+            <TextView
+                android:id="@+id/tvNpcDialog"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="142dp"
+                android:background="@drawable/ic_rounded"
+                android:padding="20dp"
+                android:text="정류장 개수를 세어보세요!"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/btnPlayNpcDialog"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="15dp"
+                android:backgroundTint="@color/white"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="top|end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play Voice"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_btn_speak_now" />
+        </FrameLayout>
+    </LinearLayout>
+
+        <!-- 이미지 -->
+        <ImageView
+            android:id="@+id/ivNpcImage"
+            android:layout_width="391dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/neighbor8" />
+
+        <!-- 시작 버튼 -->
     <Button
         android:id="@+id/btnStartGame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#F57C00"
         android:text="내가 알려줄게!"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:backgroundTint="#F57C00"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+    </LinearLayout>

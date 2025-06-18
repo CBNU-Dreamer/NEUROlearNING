@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,19 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.neurolearning.R;
-import com.example.neurolearning.data.GameProgressRepository;
-import com.example.neurolearning.data.UserGameStatus;
+import com.example.neurolearning.data.User;
+import com.example.neurolearning.data.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StoryActivity extends AppCompatActivity {
+    private static final String TAG = "StoryActivity";
 
-    private GameProgressRepository gameProgressRepository;
-    private String currentUsername;
+    private UserRepository userRepository;
+    private String currentUserId;
+    private String currentUserName;
     private int unlockedStoryCount = 1; // 해제된 스토리 수
 
-    // 하단 네비게이션 바 버튼들 (추가)
+    // 하단 네비게이션 바 버튼들
     private Button btnDictionary;
     private Button btnUserInfo;
 
@@ -37,51 +40,76 @@ public class StoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_story);
 
         // 사용자 정보 가져오기
-        currentUsername = getIntent().getStringExtra("username");
-        if (currentUsername == null) {
-            currentUsername = "testuser";
+        currentUserId = getIntent().getStringExtra("userId");
+        currentUserName = getIntent().getStringExtra("userName");
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Repository 초기화
-        gameProgressRepository = new GameProgressRepository(getApplication());
+        Log.d(TAG, "StoryActivity 시작: " + currentUserName + " (ID: " + currentUserId + ")");
 
-        // 하단 네비게이션 바 초기화 (추가)
+        // Repository 초기화
+        userRepository = new UserRepository(getApplication());
+
+        // 하단 네비게이션 바 초기화
         initBottomNavigation();
 
-        // 사용자 게임 현황 관찰
-        observeUserGameStatus();
+        // 사용자 게임 현황 로드
+        loadUserGameStatus();
     }
 
-    // 하단 네비게이션 바 초기화 메서드 (추가)
+    // 하단 네비게이션 바 초기화
     private void initBottomNavigation() {
         btnDictionary = findViewById(R.id.btnDictionary);
         btnUserInfo = findViewById(R.id.btnUserInfo);
 
-        // 이웃 사전 버튼 클릭 리스너
+        // 이웃 사전 버튼
         btnDictionary.setOnClickListener(v -> {
             Intent intent = new Intent(StoryActivity.this, NeighborBookActivity.class);
-            intent.putExtra("username", currentUsername);
+            intent.putExtra("userId", currentUserId);
+            intent.putExtra("userName", currentUserName);
             startActivity(intent);
         });
 
-        // 사용자 정보 버튼 클릭 리스너
+        // 사용자 정보 버튼
         btnUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(StoryActivity.this, UserInfoActivity.class);
-            intent.putExtra("username", currentUsername);
+            intent.putExtra("userId", currentUserId);
             startActivity(intent);
         });
     }
 
-    private void observeUserGameStatus() {
-        gameProgressRepository.getUserGameStatus(currentUsername).observe(this, userGameStatus -> {
-            if (userGameStatus != null) {
-                unlockedStoryCount = userGameStatus.totalCompletedStories + 1;
-                setupStoryList();
-            } else {
-                unlockedStoryCount = 1;
-                setupStoryList();
+    private void loadUserGameStatus() {
+        new Thread(() -> {
+            try {
+                User currentUser = userRepository.getUserById(currentUserId);
+
+                runOnUiThread(() -> {
+                    if (currentUser != null) {
+                        // 🎯 현재 스토리 = 완료된 스토리 + 1 (다음 플레이할 스토리)
+                        unlockedStoryCount = currentUser.getTotalCompletedStories() + 1;
+                        Log.d(TAG, "✅ 사용자 정보 로드 성공");
+                        Log.d(TAG, "완료된 스토리: " + currentUser.getTotalCompletedStories());
+                        Log.d(TAG, "현재 진행 스토리: " + currentUser.getCurrentStory());
+                        Log.d(TAG, "해제된 스토리 수: " + unlockedStoryCount);
+                        setupStoryList();
+                    } else {
+                        Log.e(TAG, "❌ 사용자 정보 없음 - 기본값 사용");
+                        unlockedStoryCount = 1;
+                        setupStoryList();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "❌ 사용자 게임 상태 로드 실패", e);
+                runOnUiThread(() -> {
+                    unlockedStoryCount = 1;
+                    setupStoryList();
+                });
             }
-        });
+        }).start();
     }
 
     private void setupStoryList() {
@@ -128,9 +156,12 @@ public class StoryActivity extends AppCompatActivity {
                     Class<?> targetClass = getStoryClass(storyNumber);
                     if (targetClass != null) {
                         Intent intent = new Intent(this, targetClass);
-                        intent.putExtra("username", currentUsername);
+                        intent.putExtra("userId", currentUserId);
+                        intent.putExtra("userName", currentUserName);
                         intent.putExtra("storyNumber", storyNumber);
                         startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "해당 스토리는 아직 준비 중입니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -145,6 +176,8 @@ public class StoryActivity extends AppCompatActivity {
 
             container.addView(itemView);
         }
+
+        Log.d(TAG, "스토리 목록 설정 완료: " + unlockedStoryCount + "개 해제됨");
     }
 
     // 현재/기본 배경을 동적으로 생성
@@ -165,22 +198,29 @@ public class StoryActivity extends AppCompatActivity {
                 return Story2Activity.class;
             case 3:
                 return Story3Activity.class;
-            // 4~9번 스토리는 아직 구현되지 않았으므로 임시로 Story2Activity 사용
             case 4:
-                return Story2Activity.class;
+                return Story4Activity.class;
             case 5:
-                return Story2Activity.class;
+                return Story5Activity.class;
             case 6:
-                return Story2Activity.class;
+                return Story6Activity.class;
             case 7:
-                return Story2Activity.class;
+                return Story7Activity.class;
             case 8:
-                return Story2Activity.class;
+                return Story8Activity.class;
             case 9:
-                return Story2Activity.class; // 임시로 Story2Activity 사용
+                return Story9Activity.class;
             default:
                 return null;
         }
+    }
+
+    // 액티비티 재개 시 사용자 상태 새로고침
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume - 사용자 상태 새로고침");
+        loadUserGameStatus();
     }
 
     // 내부 데이터 모델

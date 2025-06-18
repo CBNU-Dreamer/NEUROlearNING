@@ -1,85 +1,67 @@
 package com.example.neurolearning.viewmodel;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.neurolearning.data.User;
-import com.example.neurolearning.data.UserDatabase;
+import com.example.neurolearning.data.UserRepository;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class UserViewModel extends AndroidViewModel {
-
-    private final UserDatabase db;
-    private final ExecutorService executor;
+    private final UserRepository userRepository;
 
     public UserViewModel(@NonNull Application application) {
         super(application);
-        db = UserDatabase.getInstance(application);
-        executor = Executors.newFixedThreadPool(2);
+        userRepository = new UserRepository(application);
     }
 
-    // 기존 메서드들
-    public void insertUser(User user) {
-        executor.execute(() -> db.userDao().insertUser(user));
-    }
-
-    public LiveData<List<User>> getAllUsers() {
-        return db.userDao().getAllUsers();
-    }
-
-    public LiveData<User> getUserByUsername(String username) {
-        return db.userDao().getUserByUsername(username);
-    }
-
-    // UserInfoActivity에서 사용할 새로운 메서드들
-    public User getUserById(String userId) {
-        try {
-            Future<User> future = executor.submit(() -> db.userDao().getUserByUsernameSync(userId));
-            return future.get(); // 동기적으로 결과 대기
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    // 🎯 사용자 정보 업데이트
     public void updateUser(User user) {
-        executor.execute(() -> db.userDao().updateUser(user));
+        userRepository.updateUser(user);
     }
 
-    // 로그인 검증용 메서드
-    public User loginUser(String username, String password) {
-        try {
-            Future<User> future = executor.submit(() -> db.userDao().loginUser(username, password));
-            return future.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    // 🎯 UUID로 사용자 조회
+    public User getUserById(String userId) {
+        return userRepository.getUserById(userId);
     }
 
-    // 사용자 존재 여부 확인
-    public boolean isUserExists(String username) {
-        try {
-            Future<Integer> future = executor.submit(() -> db.userDao().getUserCount(username));
-            return future.get() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    // 🎯 이름과 전화번호로 사용자 조회 (LiveData)
+    public LiveData<User> getUserByNameAndPhone(String name, String phone) {
+        return userRepository.getUserByNameAndPhone(name, phone);
     }
 
+    // 🎯 이름과 전화번호로 사용자 조회 (동기 방식)
+    public User getUserByNameAndPhoneSync(String name, String phone) {
+        return userRepository.getUserByNameAndPhoneSync(name, phone);
+    }
+
+    // 🎯 로그인 검증
+    public User loginUser(String name, String phone) {
+        return userRepository.loginUser(name, phone);
+    }
+
+    // 🎯 모든 사용자 조회
+    public LiveData<List<User>> getAllUsers() {
+        return userRepository.getAllUsers();
+    }
+
+    // 🎯 사용자 존재 여부 확인
+    public boolean isUserExists(String name, String phone) {
+        return userRepository.isUserExists(name, phone);
+    }
+
+    // 🎯 게임 진행 상황 업데이트
+    public void updateGameProgress(String userId, int currentStory, int completedStories) {
+        userRepository.updateGameProgress(userId, currentStory, completedStories);
+    }
+
+    // 🎯 리소스 정리
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-        }
+        userRepository.shutdown();
     }
 }

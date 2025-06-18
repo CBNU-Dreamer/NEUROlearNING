@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="Back"
+        android:rotation="0"
         android:src="@drawable/ic_arrow_back" />
 
     <!-- 타이틀 -->
@@ -19,6 +20,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:paddingTop="8dp"
         android:text="키오스크를 사용해봐요!"
         android:textSize="24sp"
@@ -37,7 +39,8 @@
     <FrameLayout
         android:id="@+id/contentFrame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="545dp"
         android:layout_weight="1"
+        android:background="#939393"
         android:paddingTop="8dp" />
 </LinearLayout>

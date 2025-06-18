@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF9F0"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <!-- 대화창 -->
+
+            <!-- 음성 버튼: 오른쪽 상단에 배치 -->
+
+            <TextView
+                android:id="@+id/tvNpcDialog"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="142dp"
+                android:background="@drawable/ic_rounded"
+                android:padding="20dp"
+                android:text="손녀가 무척 좋아할거에요!"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/btnPlayNpcDialog"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="15dp"
+                android:backgroundTint="@color/white"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="top|end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play Voice"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_btn_speak_now" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivNpcImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:src="@drawable/neighbor9" />
+
+    <Button
+        android:id="@+id/btnEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#F57C00"
+        android:text="다음에 또 봐요!"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+</LinearLayout>

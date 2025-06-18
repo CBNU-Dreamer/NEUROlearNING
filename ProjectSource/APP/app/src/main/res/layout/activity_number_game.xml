@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FFFFFF"
+    android:background="#FFF9F0"
     android:gravity="center_horizontal">
 
     <!-- 타이틀 -->
@@ -62,76 +62,94 @@
         android:useDefaultMargins="true"
         android:layout_marginBottom="24dp">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice1"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="129"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice2"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="128"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice3"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="127"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice4"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="124"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice5"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="233"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice6"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="120"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice7"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="130"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice8"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="123"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChoice9"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_columnWeight="1"
+            android:background="@drawable/oval_button_bg"
             android:text="182"
+            android:textColor="#000000"
             android:textSize="18sp" />
     </GridLayout>
 
@@ -148,6 +166,16 @@
         android:textColor="#4E342E"
         android:background="#FFF8E1"
         android:gravity="center" />
+
+    <!-- xml 중간, tvFeedback 바로 아래에 넣어주세요 -->
+    <Button
+        android:id="@+id/btnRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다시 시도"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"/>
+
 
 
 </LinearLayout>

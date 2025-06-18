@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:background="#FFF9F0"
+    android:gravity="center"
     tools:context=".ui.CrossWordGameActivity">
 
     <!-- 헤더 -->
@@ -30,17 +31,27 @@
         android:gravity="center"
         android:padding="4dp" />
 
+    <!-- 1:1 비율 혹은 weight 유지하면서 중앙 배치 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:background="#E3F2FD"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:foregroundGravity="center">    <!-- FrameLayout 안에서 자식 중앙 -->
+
     <!-- 퍼즐 그리드 표시 영역 -->
     <GridLayout
         android:id="@+id/gridLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:alignmentMode="alignMargins"
         android:background="#E3F2FD"
         android:columnCount="8"
         android:padding="4dp"
-        android:rowCount="8" />
+        android:rowCount="8"
+        android:layout_gravity="center"/>
+    </FrameLayout>
 
     <!-- 입력 및 힌트 영역 -->
     <LinearLayout
@@ -48,7 +59,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#E1F5FE"
+        android:background="#ffffff"
         android:padding="12dp">
 
         <TextView
