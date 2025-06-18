@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.neurolearning.R;
 
+import android.os.Handler;
+import androidx.core.content.ContextCompat;
+
 public class NumberGameActivity extends AppCompatActivity {
     private static final String TAG = "NumberGameActivity";
 
@@ -53,6 +56,19 @@ public class NumberGameActivity extends AppCompatActivity {
         // 정답으로 표시된 숫자(예: "129")를 가져와서 로컬 변수에 저장
         correctNumber = tvAnswerNumber.getText().toString();
 
+        // ▶ 초깃값: 숫자만 보이고, 버튼·피드백 숨김, 버튼 비활성화
+        gridChoices.setVisibility(View.GONE);
+        tvFeedback.setVisibility(View.GONE);
+        disableAllButtons();
+
+        // ▶ 3초 뒤에 숫자 사라지고 버튼·피드백 보이기
+        tvAnswerNumber.postDelayed(() -> {
+            tvAnswerNumber.setVisibility(View.GONE);
+            gridChoices.setVisibility(View.VISIBLE);
+            tvFeedback.setVisibility(View.VISIBLE);
+            enableAllButtons();
+        }, 3000);
+
         Log.d(TAG, "정답 숫자: " + correctNumber);
 
         // GridLayout 안에 들어 있는 9개의 Button을 순회하며 클릭 리스너를 설정
@@ -65,6 +81,18 @@ public class NumberGameActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    private void enableAllButtons() {
+        int childCount = gridChoices.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridChoices.getChildAt(i);
+            if (child instanceof Button) {
+                child.setEnabled(true);
+            }
+        }
+    }
+
 
     /**
      * 사용자가 숫자 버튼을 눌렀을 때 호출됨
@@ -91,7 +119,9 @@ public class NumberGameActivity extends AppCompatActivity {
             tvNpcTalk.setText("아쉽지만 괜찮아요! 다음에 더 잘하실 거예요.");
 
             // 🎯 오답 시 빨간색 배경
-            chosenButton.setBackgroundResource(android.R.color.holo_red_light);
+            chosenButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this, android.R.color.holo_red_light)
+            );
             mistakeCount = 1;
 
             // 정답 버튼을 초록색으로 표시
@@ -114,7 +144,9 @@ public class NumberGameActivity extends AppCompatActivity {
             if (child instanceof Button) {
                 Button btn = (Button) child;
                 if (btn.getText().toString().equals(correctNumber)) {
-                    btn.setBackgroundResource(android.R.color.holo_green_light);
+                    btn.setBackgroundTintList(
+                            ContextCompat.getColorStateList(this, android.R.color.holo_green_light)
+                    );
                     break;
                 }
             }
