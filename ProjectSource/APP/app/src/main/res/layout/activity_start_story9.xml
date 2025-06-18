@@ -69,5 +69,6 @@
         android:text="어서 답장해봐요!"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:strokeWidth="1dp" />
+        <!--app:strokeColor="#000000" -->
+        <!-- app:strokeWidth="1dp" />-->
 </LinearLayout>
