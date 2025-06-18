@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_letter_popup"
+    android:padding="20dp"
+    android:layout_margin="24dp">
+
+    <TextView
+        android:id="@+id/tvPopupHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To. 이웃님께,"
+        android:textSize="25sp"
+        android:fontFamily="cursive"
+        android:layout_marginBottom="12dp"/>
+
+
+    <TextView
+        android:id="@+id/tvPopupMessage"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:text="안녕하세요!\n이야기들은\n재미있으셨나요?\n이웃분들은\n어떠셨어요?"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnClosePopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="닫기"
+        android:backgroundTint="#F57C00"
+        android:textColor="#FFFFFF"
+        app:strokeWidth="1dp"/>
+
+</LinearLayout>
