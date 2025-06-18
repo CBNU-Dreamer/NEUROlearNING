@@ -81,14 +81,30 @@ public class CrossWordGameActivity extends AppCompatActivity {
 
     private void drawGrid() {
         gridLayout.removeAllViews();
+        // dp 단위를 px로 변환
+        int cellSize = getResources().getDimensionPixelSize(R.dimen.crossword_cell_size);
+        int margin   = getResources().getDimensionPixelSize(R.dimen.crossword_cell_margin);
+
+        gridLayout.setColumnCount(8);
+        gridLayout.setRowCount(8);
+        gridLayout.setAlignmentMode(GridLayout.ALIGN_MARGINS);
+
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
                 TextView cell = new TextView(this);
-                cell.setWidth(130);
-                cell.setHeight(130);
                 cell.setGravity(Gravity.CENTER);
                 cell.setTextSize(24);
                 cell.setBackgroundColor(Color.parseColor("#BBDEFB"));
+
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams(
+                        GridLayout.spec(r, 1),
+                        GridLayout.spec(c, 1)
+                );
+                params.width  = cellSize;
+                params.height = cellSize;
+                params.setMargins(margin, margin, margin, margin);
+                cell.setLayoutParams(params);
+
                 Square sq = new Square(cell, r, c);
                 board[r][c] = sq;
                 cell.setOnClickListener(v -> handleCellClick(sq.row, sq.col));
