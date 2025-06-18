@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.02" />
+        app:layout_constraintGuide_begin="30dp" />
 
     <!-- NPC 이름 박스 하단 가이드라인 (화면의 10%) -->
     <androidx.constraintlayout.widget.Guideline
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.10" />
+        app:layout_constraintGuide_percent="0.09" />
 
     <!-- 대화창 하단 가이드라인 (화면의 38%) -->
     <androidx.constraintlayout.widget.Guideline
@@ -40,25 +40,27 @@
         app:layout_constraintGuide_percent="0.85" />
 
     <!-- [1] NPC 이름 박스 -->
+
+    <!-- [2] NPC 대화창 + 음성 버튼 영역 -->
+
     <TextView
         android:id="@+id/tvNpcName"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
         android:background="@drawable/ic_rounded"
         android:backgroundTint="#FFE0B2"
+        android:gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:text="편의점 직원 배수연"
         android:textColor="#000000"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintBottom_toBottomOf="@id/guidelineNameBottom"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guidelineTop"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- [2] NPC 대화창 + 음성 버튼 영역 -->
     <FrameLayout
         android:id="@+id/dialogFrame"
         android:layout_width="0dp"

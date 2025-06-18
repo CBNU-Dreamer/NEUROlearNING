@@ -26,9 +26,9 @@
 
             <TextView
                 android:id="@+id/tvNpcDialog"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="142dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/ic_rounded"
                 android:padding="20dp"
                 android:text="정말 고생하셨어요! 불고기 버거 맛있게 드세요 :)"
@@ -37,13 +37,13 @@
 
             <ImageButton
                 android:id="@+id/btnPlayNpcDialog"
-                android:layout_marginTop="45dp"
-                android:layout_marginRight="15dp"
-                android:backgroundTint="@color/white"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="top|end"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="15dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="@color/white"
                 android:contentDescription="Play Voice"
                 android:padding="4dp"
                 android:src="@android:drawable/ic_btn_speak_now" />
