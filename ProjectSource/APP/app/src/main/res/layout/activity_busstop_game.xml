@@ -37,25 +37,25 @@
             android:id="@+id/tvBusLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="서울역 → 시청 → 종로3가 → 동대문 → 신설동 → 청량리"
-            android:padding="16dp"
-            android:background="#E0F7FA"
-            android:textSize="16sp"
-            android:textColor="#00796B"
+            android:layout_marginBottom="24dp"
+            android:background="#FFD1A2"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:padding="16dp"
+            android:text="서울역 → 시청 → 종로3가 → 동대문 → 신설동 → 청량리"
+            android:textColor="#000000"
+            android:textSize="16sp" />
 
         <!-- 질문 -->
         <TextView
             android:id="@+id/tvQuestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="새연양은 몇 개 뒤에 내려야 할까요?"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:background="#BBDEFB"
+            android:layout_marginBottom="24dp"
+            android:background="#FFAE5B"
             android:padding="16dp"
-            android:layout_marginBottom="24dp" />
+            android:text="새연양은 몇 개 뒤에 내려야 할까요?"
+            android:textColor="#000000"
+            android:textSize="18sp" />
 
         <!-- 정답 버튼들 (1~6) -->
         <LinearLayout
@@ -70,6 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
+                android:background="#FFD1A2"
                 android:padding="12dp" />
             <Button
                 android:id="@+id/btn2"
