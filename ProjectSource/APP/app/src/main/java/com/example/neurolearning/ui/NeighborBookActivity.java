@@ -149,12 +149,47 @@ public class NeighborBookActivity extends AppCompatActivity {
                 final int storyNumber = i + 1;
                 play.setOnClickListener(v -> {
                     Log.d(TAG, "스토리 " + storyNumber + " 클릭");
-                    Intent intent = new Intent(this, StoryActivity.class);
+                    Class<?> storyClass;
+                    switch (storyNumber) {
+                        case 1:
+                            storyClass = Story1Activity.class;
+                            break;
+                        case 2:
+                            storyClass = Story2Activity.class;
+                            break;
+                        case 3:
+                            storyClass = Story3Activity.class;
+                            break;
+                        case 4:
+                            storyClass = Story4Activity.class;
+                            break;
+                        case 5:
+                            storyClass = Story5Activity.class;
+                            break;
+                        case 6:
+                            storyClass = Story6Activity.class;
+                            break;
+                        case 7:
+                            storyClass = Story7Activity.class;
+                            break;
+                        case 8:
+                            storyClass = Story8Activity.class;
+                            break;
+                        case 9:
+                            storyClass = Story9Activity.class;
+                            break;
+                        default:
+                            Toast.makeText(this, "해당 스토리가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                    }
+
+                    Intent intent = new Intent(this, storyClass);
                     intent.putExtra("userId", currentUserId);
                     intent.putExtra("userName", currentUserName);
                     startActivity(intent);
-                    finish(); // NeighborBookActivity 종료하고 StoryActivity로 이동
+                    finish();
                 });
+
             } else {
                 // 🔒 LOCKED - 잠긴 스토리
                 iv.setImageResource(R.drawable.ic_lock);
