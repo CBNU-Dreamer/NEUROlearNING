@@ -167,5 +167,15 @@
         android:background="#FFF8E1"
         android:gravity="center" />
 
+    <!-- xml 중간, tvFeedback 바로 아래에 넣어주세요 -->
+    <Button
+        android:id="@+id/btnRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다시 시도"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"/>
+
+
 
 </LinearLayout>
