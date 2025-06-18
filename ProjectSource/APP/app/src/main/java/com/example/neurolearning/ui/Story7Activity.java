@@ -45,7 +45,7 @@ public class Story7Activity extends AppCompatActivity {
         currentUserId = getIntent().getStringExtra("userId");
         currentUserName = getIntent().getStringExtra("userName");
 
-        if (currentUserId == null) {
+        if (currentUserId == null || currentUserName == null) {
             Toast.makeText(this, "사용자 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -63,12 +63,16 @@ public class Story7Activity extends AppCompatActivity {
     private void showInitialScreen() {
         contentFrame.removeAllViews();
         View initial = LayoutInflater.from(this)
-                .inflate(R.layout.activity_start_story7, contentFrame, false); // 레이아웃 재사용
+                .inflate(R.layout.activity_start_story7, contentFrame, false);
         Button btn = initial.findViewById(R.id.btnStartGame);
 
         // 뷰 바인딩
         tvNpcDialog = initial.findViewById(R.id.tvNpcDialog);
         btnPlayNpcDialog = initial.findViewById(R.id.btnPlayNpcDialog);
+
+        // 🎯 사용자 이름을 포함한 대화 내용 설정
+        String dialogText = currentUserName + "님!\n이웃들을 소개해 드릴게요!";
+        tvNpcDialog.setText(dialogText);
 
         // 재생 버튼 클릭 → TtsHelper 호출
         btnPlayNpcDialog.setOnClickListener(v ->
@@ -122,11 +126,15 @@ public class Story7Activity extends AppCompatActivity {
     private void showEndScreen() {
         contentFrame.removeAllViews();
         View end = LayoutInflater.from(this)
-                .inflate(R.layout.activity_end_story7, contentFrame, false); // 레이아웃 재사용
+                .inflate(R.layout.activity_end_story7, contentFrame, false);
         Button btn = end.findViewById(R.id.btnEnd);
 
         tvNpcDialog = end.findViewById(R.id.tvNpcDialog);
         btnPlayNpcDialog = end.findViewById(R.id.btnPlayNpcDialog);
+
+        // 🎯 완료 시에도 사용자 이름을 포함한 메시지 설정 (선택사항)
+        String endDialogText = currentUserName + "님, 정말 잘 기억하셨네요!";
+        tvNpcDialog.setText(endDialogText);
 
         // 재생 버튼 클릭 → TtsHelper 호출
         btnPlayNpcDialog.setOnClickListener(v ->
