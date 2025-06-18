@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:background="#FFF9F0">
 
-    <!-- 로고 이미지 -->
+    <!-- 로고 이미지 - 더 크게! -->
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginHorizontal="32dp"
+        android:layout_height="300dp"
+        android:layout_marginHorizontal="24dp"
         android:src="@drawable/neuro_learning_logo"
         android:scaleType="centerInside"
         android:alpha="1"
