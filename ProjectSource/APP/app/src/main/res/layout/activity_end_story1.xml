@@ -97,6 +97,7 @@
     </FrameLayout>
 
     <!-- [3] NPC 이미지 - 적응형 크기 -->
+
     <ImageView
         android:id="@+id/ivEndImage"
         android:layout_width="0dp"

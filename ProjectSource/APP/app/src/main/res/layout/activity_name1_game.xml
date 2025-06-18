@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF9F0"
@@ -64,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
                         android:padding="6dp"
                         android:text="정새연"
                         android:textColor="#000000"
@@ -90,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
                         android:padding="6dp"
                         android:text="카구야"
                         android:textColor="#000000"
@@ -124,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
                         android:padding="6dp"
                         android:text="배수연"
                         android:textColor="#000000"
@@ -150,7 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
                         android:padding="6dp"
                         android:text="야마다"
                         android:textColor="#000000"
@@ -181,16 +182,17 @@
                         android:src="@drawable/neigh5" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="55dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
+                        android:contentDescription="이름: 에렌"
+                        android:gravity="center"
                         android:padding="6dp"
                         android:text="에렌"
                         android:textColor="#000000"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:contentDescription="이름: 에렌" />
+                        android:textSize="16sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,13 +212,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#FDE0E0"
+                        android:background="#FFD1A2"
                         android:padding="6dp"
                         android:text="배새연"
                         android:textColor="#000000"
                         android:textSize="16sp"
                         android:gravity="center"
                         android:contentDescription="이름: 배새연" />
+
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -224,14 +227,16 @@
         <!-- 확인 버튼 -->
         <Button
             android:id="@+id/btnConfirm"
-            android:layout_width="wrap_content"
+            android:layout_width="124dp"
             android:layout_height="wrap_content"
-            android:text="확인"
-            android:textSize="18sp"
-            android:backgroundTint="#FFD54F"
-            android:textColor="#000000"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#F57C00"
             android:padding="12dp"
-            android:layout_marginTop="24dp" />
+            android:text="확인"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:strokeColor="#000000"
+            app:strokeWidth="1dp" />
 
     </LinearLayout>
 </ScrollView>
