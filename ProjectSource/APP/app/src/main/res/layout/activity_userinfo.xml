@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF9F0"
+    android:backgroundTint="#FFF9F0">
+
+    <!-- 상단 툴바 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="#F57C00"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <!-- 내용은 툴바 아래에 배치 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 타이틀 -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="16dp"
+                android:text="00님의 정보입니다!"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- 프로필 이미지 -->
+
+            <!-- 사진 올리기 버튼 -->
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <Button
+                android:id="@+id/btnUploadPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#F57C00"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="사진 올리기"
+                app:strokeWidth="1dp" />
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <!-- 이름 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="이름" />
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="000"
+                android:inputType="textPersonName"
+                android:padding="8dp" />
+
+            <!-- 나이 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="생년월일" />
+
+            <!-- 연락처 -->
+
+            <!-- 음력 체크박스는 기존대로 -->
+            <CheckBox
+                android:id="@+id/checkBoxLunar"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:text="음력" />
+
+            <!-- 생년월일 입력란을 가로로 배치 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etBirthYear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:hint="년생"
+                    android:inputType="number"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/etBirthMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="월"
+                    android:inputType="number"
+                    android:padding="8dp"
+                    android:layout_marginStart="8dp" />
+
+                <EditText
+                    android:id="@+id/etBirthDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="일"
+                    android:inputType="number"
+                    android:padding="8dp"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="연락처" />
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="000-0000-0000"
+                android:inputType="phone"
+                android:padding="8dp" />
+
+            <!-- 주소 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="주소" />
+
+            <EditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="00시 거주 중"
+                android:inputType="textPostalAddress"
+                android:padding="8dp" />
+
+            <!-- 보호자 연락처 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="보호자 연락처" />
+
+            <EditText
+                android:id="@+id/etGuardian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="000-0000-0000"
+                android:inputType="phone"
+                android:padding="8dp" />
+
+            <!-- 질병 유무 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="질병 유무" />
+
+            <EditText
+                android:id="@+id/etDisease"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="질병 유무"
+                android:inputType="text"
+                android:padding="8dp" />
+
+            <!-- 수정 버튼 -->
+            <Button
+                android:id="@+id/btnModify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#FFCC00"
+                android:padding="12dp"
+                android:text="정보를 수정하세요!"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

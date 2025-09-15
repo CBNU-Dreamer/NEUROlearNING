@@ -1,0 +1,32 @@
+<!-- res/values-night/themes.xml -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- 다크 모드용 베이스 테마 -->
+    <style name="Base.Theme.NEUROLEARNING"
+        parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- 다크 모드에서는 어두운 배경 -->
+        <item name="android:statusBarColor">#2C2C2C</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!-- 다크 모드에서는 밝은 아이콘 사용 -->
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- 다크 모드 배경색 -->
+        <item name="android:windowBackground">#1E1E1E</item>
+
+        <!-- 다크 모드 Primary 색상 -->
+        <item name="colorPrimary">#FF8A50</item>
+    </style>
+
+    <style name="Theme.NEUROLEARNING"
+        parent="Base.Theme.NEUROLEARNING" />
+
+    <!-- 다크 모드용 스플래시 테마 -->
+    <style name="SplashTheme" parent="Base.Theme.NEUROLEARNING">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <!-- 다크 모드 스플래시 배경 -->
+        <item name="android:windowBackground">#1E1E1E</item>
+        <item name="android:statusBarColor">#1E1E1E</item>
+    </style>
+</resources>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- ================================================
+         [1] 암기 화면 (최초에만 표시, 이후 Gone)
+         ================================================ -->
+    <LinearLayout
+        android:id="@+id/layoutMemorize"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- 상단 타이틀 -->
+        <TextView
+            android:id="@+id/tvMemorizeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사야 할 물건을 기억하세요!"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- 메모장 스타일 배경 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/bg_note_paper"
+            android:layout_marginTop="16dp"
+            android:padding="20dp">
+
+            <!-- 체크박스 아이템 목록 (클릭 불가) -->
+            <LinearLayout
+                android:id="@+id/llItemList"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:id="@+id/cb_item1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="칫솔"
+                    android:checked="true"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+                <CheckBox
+                    android:id="@+id/cb_item2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="치약"
+                    android:checked="false"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+                <CheckBox
+                    android:id="@+id/cb_item3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="샤인머스캣"
+                    android:checked="false"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+                <CheckBox
+                    android:id="@+id/cb_item4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="물"
+                    android:checked="false"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- 하단 버튼: 타이머가 돌면서 텍스트가 바뀜 -->
+        <Button
+            android:id="@+id/btnStartQuizAfterTimer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="60초 뒤 장보기 시작!"
+            android:textSize="16sp"
+            android:backgroundTint="#FFEB3B"
+            android:layout_marginTop="24dp" />
+    </LinearLayout>
+
+    <!-- ================================================
+         [2] 준비 화면 (기본 상태는 Gone)
+         ================================================ -->
+    <LinearLayout
+        android:id="@+id/layoutGetReady"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tvReadyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="준비됐나요?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="200dp" />
+
+        <Button
+            android:id="@+id/btnReadyYes"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="네, 준비됐어요!"
+            android:textSize="16sp"
+            android:backgroundTint="#FFEB3B"
+            android:layout_marginTop="24dp" />
+
+        <Button
+            android:id="@+id/btnReadyMore"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="아직 더 외울래요!"
+            android:textSize="16sp"
+            android:backgroundTint="#E0E0E0"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+
+    <!-- ================================================
+         [3] 퀴즈 화면 (기본 상태는 Gone)
+         ================================================ -->
+    <ScrollView
+        android:id="@+id/layoutQuiz"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvQuizTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사야 할 물건을 떠올리세요!"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_gravity="center_horizontal" />
+
+            <!-- 퀴즈용 토글 버튼 목록 -->
+            <LinearLayout
+                android:id="@+id/llQuizOptions"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <ToggleButton
+                    android:id="@+id/tb_opt1"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="칫솔"
+                    android:textOn="칫솔"
+                    android:layout_marginTop="8dp" />
+
+                <ToggleButton
+                    android:id="@+id/tb_opt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="치약"
+                    android:textOn="치약"
+                    android:layout_marginTop="8dp" />
+
+                <ToggleButton
+                    android:id="@+id/tb_opt3"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="샤인머스캣"
+                    android:textOn="샤인머스캣"
+                    android:layout_marginTop="8dp" />
+
+                <ToggleButton
+                    android:id="@+id/tb_opt4"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="물"
+                    android:textOn="물"
+                    android:layout_marginTop="8dp" />
+
+                <ToggleButton
+                    android:id="@+id/tb_opt5"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="음료"
+                    android:textOn="음료"
+                    android:layout_marginTop="8dp" />
+
+                <ToggleButton
+                    android:id="@+id/tb_opt6"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:textOff="과자"
+                    android:textOn="과자"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="24dp" />
+            </LinearLayout>
+
+            <!-- 선택된 물건 순서 텍스트 -->
+            <TextView
+                android:id="@+id/tvSelectedItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="선택된 물건: "
+                android:textSize="16sp"
+                android:layout_marginTop="12dp" />
+
+            <!-- 제출 버튼 -->
+            <Button
+                android:id="@+id/btnSubmitQuiz"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="제출하기"
+                android:textSize="16sp"
+                android:backgroundTint="#FFEB3B"
+                android:layout_marginTop="24dp" />
+
+            <!-- 정답 결과 텍스트 -->
+            <TextView
+                android:id="@+id/tvQuizResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:gravity="center_horizontal"
+                android:textColor="#D32F2F"/>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

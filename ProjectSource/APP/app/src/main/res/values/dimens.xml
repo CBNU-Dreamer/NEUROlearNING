@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 셀 크기 및 여백 -->
+    <dimen name="crossword_cell_size">40dp</dimen>
+    <dimen name="crossword_cell_margin">2dp</dimen>
+</resources>

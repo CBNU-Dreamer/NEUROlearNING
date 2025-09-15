@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <!-- 상단 텍스트 바 -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="운영진"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <!-- 채팅 영역 -->
+    <LinearLayout
+        android:id="@+id/chatContainer"
+        android:layout_below="@id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp">
+
+        <!-- 사용자 메시지 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="안녕하세요!"
+            android:textSize="22sp"
+            android:textColor="#FFFFFF"
+            android:background="#000000"
+            android:padding="14dp"
+            android:layout_gravity="end"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#000000" />
+
+        <!-- 운영자 메시지들 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="안녕하세요, 000님!"
+            android:textSize="22sp"
+            android:textColor="#000000"
+            android:background="#EEEEEE"
+            android:padding="14dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#EEEEEE" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="모든 에피소드를 보셨습니다!"
+            android:textSize="22sp"
+            android:textColor="#000000"
+            android:background="#EEEEEE"
+            android:padding="14dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#EEEEEE" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="에피소드는 계속해서 업데이트되니,\n조금만 기다려주세요!"
+            android:textSize="22sp"
+            android:textColor="#000000"
+            android:background="#EEEEEE"
+            android:padding="14dp"
+            android:layout_gravity="start"
+            android:backgroundTint="#EEEEEE" />
+    </LinearLayout>
+
+    <!-- 입력창 하단 -->
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#F0F0F0"
+        android:paddingHorizontal="12dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:hint="Message..."
+            android:textSize="22sp"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
+</RelativeLayout>
